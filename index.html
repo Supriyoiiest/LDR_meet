@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jhingy & Posto's Zootopia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Super cute bubbly Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://meet.jit.si/external_api.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'zoo-orange': '#ff8a65', 
+                        'zoo-orange-hover': '#ff7043',
+                        'zoo-green': '#81c784',  
+                        'zoo-blue': '#4fc3f7',   
+                        'zoo-pink': '#f06292',   
+                        'zoo-bg': '#fff8e1',     
+                    },
+                    fontFamily: {
+                        'sans': ['"Comic Neue"', 'cursive', 'sans-serif'],
+                        'display': ['"Chewy"', 'cursive'],
+                    },
+                    animation: {
+                        'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'bounce-slight': 'bounce 2.5s infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                        'wiggle': 'wiggle 1s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        wiggle: {
+                            '0%, 100%': { transform: 'rotate(-3deg)' },
+                            '50%': { transform: 'rotate(3deg)' },
+                        }
+                    },
+                    boxShadow: {
+                        /* Kawaii "Sticker" hard shadows instead of professional soft shadows */
+                        'kawaii': '6px 6px 0px 0px rgba(0,0,0,0.1)',
+                        'kawaii-orange': '4px 4px 0px 0px #ff8a65',
+                        'kawaii-blue': '4px 4px 0px 0px #4fc3f7',
+                        'kawaii-pink': '4px 4px 0px 0px #f06292',
+                        'kawaii-green': '4px 4px 0px 0px #81c784',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            /* Dynamic Animated Gradient Background */
+            background: linear-gradient(-45deg, #fff8e1, #ffe0b2, #f8bbd0, #e1f5fe);
+            background-size: 400% 400%;
+            animation: gradientBG 20s ease infinite;
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .floating-element {
+            position: fixed;
+            bottom: -50px;
+            pointer-events: none;
+            animation: floatUp linear infinite;
+            z-index: 0;
+            opacity: 0.5;
+        }
+
+        @keyframes floatUp {
+            to { transform: translateY(-120vh) rotate(360deg); }
+        }
+        
+        /* Cute tape for Polaroid */
+        .polaroid {
+            position: relative;
+            background: white;
+            padding: 1rem 1rem 3rem 1rem;
+            border-radius: 8px;
+            border: 3px solid #ff8a65;
+            box-shadow: 6px 6px 0px 0px #ffe0b2;
+            transform: rotate(-3deg);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Washi tape */
+        .polaroid::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%) rotate(4deg);
+            width: 80px;
+            height: 30px;
+            background-color: rgba(129, 199, 132, 0.7); /* Cute green tape */
+            border: 2px dashed white;
+            border-radius: 2px;
+            z-index: 10;
+        }
+        
+        .polaroid:hover {
+            transform: rotate(2deg) scale(1.05) translateY(-5px);
+            box-shadow: 8px 8px 0px 0px #ff8a65;
+        }
+
+        .heart-btn {
+            clip-path: path('M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z');
+        }
+        
+        textarea::-webkit-scrollbar {
+            width: 14px;
+        }
+        textarea::-webkit-scrollbar-track {
+            background: #fff8e1;
+            border-radius: 12px;
+            border: 2px solid #ff8a65;
+        }
+        textarea::-webkit-scrollbar-thumb {
+            background: #ff8a65;
+            border-radius: 12px;
+            border: 3px solid #fff8e1;
+        }
+
+        .notebook-lines {
+            background-image: repeating-linear-gradient(transparent, transparent 31px, #ffccbc 31px, #ffccbc 33px);
+            line-height: 32px;
+            padding-top: 8px;
+        }
+
+        .page-section {
+            display: none;
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        .page-section.active {
+            display: block;
+        }
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        
+        /* Floating pill Nav instead of full width glass */
+        .bottom-nav-pill {
+            background: white;
+            border: 4px solid #ff8a65;
+            border-radius: 50px;
+            box-shadow: 0px 8px 0px 0px #ffccbc;
+        }
+        
+        /* Hard press button animation */
+        .btn-press:active {
+            transform: translateY(4px);
+            box-shadow: 0px 0px 0px 0px !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center pb-32 text-slate-800 overflow-x-hidden font-bold">
+
+    <!-- Dynamic Background Container -->
+    <div id="dynamic-bg" class="fixed inset-0 pointer-events-none z-0 overflow-hidden"></div>
+
+    <!-- Header -->
+    <header class="text-center mb-8 animate-float mt-8 px-4 relative z-10">
+        <h1 class="font-display text-5xl md:text-6xl text-zoo-orange tracking-wider" style="-webkit-text-stroke: 2px white; text-shadow: 3px 3px 0px #ffccbc;">
+            🦊 Jhingy <span class="text-zoo-pink px-1">loves</span> Posto 🐰
+        </h1>
+        <div class="inline-block bg-white border-4 border-zoo-green px-6 py-2 rounded-full mt-4 shadow-kawaii-green transform rotate-2">
+            <p class="text-xl text-zoo-green font-display tracking-wide">Welcome to our Zootopia! 🚓🥕</p>
+        </div>
+    </header>
+
+    <main class="w-full max-w-4xl px-4 relative z-10 flex-grow">
+        
+        <!-- PAGE 1: HOME & SETTINGS -->
+        <section id="page-home" class="page-section active flex flex-col gap-8">
+            <div class="bg-white rounded-[2rem] p-6 md:p-8 border-4 border-zoo-orange shadow-kawaii text-center transform -rotate-1">
+                <div class="border-4 border-dashed border-zoo-orange rounded-2xl p-2 mb-4 bg-zoo-bg inline-block">
+                    <img src="https://media.giphy.com/media/26xBsNKF2A4X1oO8E/giphy.gif" alt="Zootopia Greeting" class="w-full max-w-sm mx-auto rounded-xl">
+                </div>
+                <h2 class="font-display text-3xl text-zoo-orange mb-2">Ready for duty! <span class="inline-block animate-wiggle">🐾</span></h2>
+                <p class="text-lg text-gray-600 font-bold mb-2">Tap the cute buttons below to explore!</p>
+            </div>
+
+            <!-- Drive API Settings -->
+            <div class="bg-white rounded-[2rem] p-6 md:p-8 border-4 border-zoo-blue shadow-kawaii transform rotate-1">
+                <h3 class="font-display text-3xl text-zoo-blue mb-4"><i class="fa-brands fa-google-drive mr-2 text-2xl"></i> Magic Folder Link!</h3>
+                <p class="text-base text-gray-500 mb-6 font-bold">Connect your Google Drive folder to load our real memories! ✨</p>
+                
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-lg font-bold text-zoo-blue ml-2 mb-2">Public Drive Folder Link 📂</label>
+                        <input type="text" id="driveLink" placeholder="Paste link here..." class="w-full p-4 bg-white border-4 border-zoo-blue rounded-2xl outline-none focus:bg-blue-50 transition-colors shadow-[inset_0_4px_4px_rgba(0,0,0,0.05)] text-lg">
+                    </div>
+                    <div>
+                        <label class="block text-lg font-bold text-zoo-blue ml-2 mb-2">Google API Key 🔑</label>
+                        <input type="password" id="apiKey" placeholder="Secret key..." class="w-full p-4 bg-white border-4 border-zoo-blue rounded-2xl outline-none focus:bg-blue-50 transition-colors shadow-[inset_0_4px_4px_rgba(0,0,0,0.05)] text-lg">
+                    </div>
+                    <button onclick="connectDrive()" class="btn-press w-full py-4 bg-zoo-blue text-white font-display text-2xl tracking-wider rounded-2xl border-4 border-blue-400 shadow-kawaii-blue transition-all">
+                        Connect Drive! 🚀
+                    </button>
+                    <p id="driveStatus" class="text-base text-center font-bold text-zoo-orange hidden bg-orange-100 p-2 rounded-xl border-2 border-dashed border-zoo-orange"></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 2: MEMORY MAKER -->
+        <section id="page-memories" class="page-section max-w-md mx-auto">
+            <div class="bg-white rounded-[2rem] p-6 border-4 border-zoo-orange shadow-kawaii relative">
+                <!-- Cute corner decoration -->
+                <div class="absolute -top-6 -right-6 text-5xl animate-wiggle">✨</div>
+                
+                <div class="flex justify-between items-center mb-10 relative z-10">
+                    <h2 class="font-display text-4xl text-zoo-orange">
+                        Memories 📸
+                    </h2>
+                    <button onclick="loadRandomImage()" class="btn-press flex items-center gap-2 px-5 py-2 bg-zoo-orange text-white rounded-full font-display text-xl border-4 border-orange-300 shadow-kawaii-orange transition-all">
+                        <i class="fa-solid fa-rotate"></i> Next
+                    </button>
+                </div>
+                
+                <div class="polaroid mx-auto w-full max-w-[240px] mb-8 relative z-10">
+                    <img id="memoryImage" src="https://images.unsplash.com/photo-1560807707-8cc77767d783?auto=format&fit=crop&q=80&w=400&h=400" alt="Memory" class="w-full aspect-square object-cover rounded-md border-2 border-gray-200">
+                    <p class="text-center mt-4 text-sm text-zoo-orange font-bold tracking-wider font-sans" id="imageToken">#TOKEN</p>
+                </div>
+
+                <div class="space-y-4 relative z-10 bg-orange-50 p-4 rounded-2xl border-4 border-dashed border-zoo-orange">
+                    <label class="block text-xl font-display text-zoo-orange ml-2">Write 5 lines about us! ✍️</label>
+                    <textarea id="memoryText" rows="5" class="notebook-lines w-full p-4 bg-transparent border-none outline-none resize-none text-gray-700 text-lg font-bold" placeholder="1. You look so cute here..."></textarea>
+                    
+                    <div class="flex justify-between items-center text-sm font-bold px-2">
+                        <span id="lineCount" class="text-zoo-green bg-green-100 px-3 py-1 rounded-full border-2 border-zoo-green">0 / 5 lines</span>
+                    </div>
+                </div>
+                
+                <button onclick="saveMemory()" class="btn-press mt-6 w-full py-4 bg-zoo-orange text-white font-display text-2xl tracking-wide rounded-2xl border-4 border-orange-300 shadow-kawaii-orange transition-all flex justify-center items-center gap-3">
+                    <i class="fa-solid fa-heart animate-pulse"></i> Keep it safe!
+                </button>
+            </div>
+        </section>
+
+        <!-- PAGE 3: HUGS -->
+        <section id="page-hugs" class="page-section max-w-md mx-auto">
+            <div class="bg-white rounded-[3rem] p-8 border-4 border-zoo-pink shadow-kawaii text-center flex flex-col items-center justify-center h-[450px] relative">
+                <!-- Decorative stars -->
+                <div class="absolute top-4 left-4 text-3xl text-pink-300 animate-wiggle">⭐</div>
+                <div class="absolute bottom-4 right-4 text-3xl text-pink-300 animate-wiggle" style="animation-delay: 0.5s">🌸</div>
+
+                <h2 class="font-display text-5xl text-zoo-pink mb-12">Need a Hug? <br><span class="text-3xl mt-2 block">🥺👉👈</span></h2>
+                
+                <button onclick="requestHug()" class="relative group z-10 focus:outline-none">
+                    <div class="absolute -inset-2 bg-pink-200 rounded-full blur-lg opacity-60 animate-pulse-fast"></div>
+                    <div class="btn-press relative w-40 h-40 bg-zoo-pink rounded-full border-4 border-pink-300 flex items-center justify-center shadow-kawaii-pink cursor-pointer transition-transform group-hover:scale-105">
+                        <svg viewBox="0 0 24 24" class="w-24 h-24 fill-current text-white heart-btn pt-2" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                    </div>
+                </button>
+                <p class="mt-12 text-zoo-pink font-display text-2xl">Squish the heart! 💕</p>
+            </div>
+        </section>
+
+        <!-- PAGE 4: VIDEO CALL -->
+        <section id="page-calls" class="page-section max-w-md mx-auto">
+            <div class="bg-white rounded-[3rem] p-8 border-4 border-zoo-blue shadow-kawaii text-center relative h-[400px] flex flex-col justify-center items-center">
+                <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-6xl animate-bounce-slight">🚓</div>
+                
+                <h2 class="font-display text-4xl text-zoo-blue mb-4 mt-6">
+                    ZPD Dispatch!
+                </h2>
+                <div class="bg-blue-50 border-4 border-dashed border-zoo-blue rounded-2xl p-4 mb-8 w-full">
+                    <p class="text-zoo-blue font-bold text-xl">🚨 Emergency cute meeting required right now! 🚨</p>
+                </div>
+                
+                <button onclick="startVideoCall()" class="btn-press w-full py-5 bg-zoo-blue text-white font-display text-3xl tracking-wide rounded-2xl border-4 border-blue-300 shadow-kawaii-blue transition-all flex justify-center items-center gap-3">
+                    <i class="fa-solid fa-video animate-pulse"></i> Call Now!
+                </button>
+            </div>
+        </section>
+
+        <!-- PAGE 5: DIARY / SAVED MEMORIES -->
+        <section id="page-diary" class="page-section max-w-2xl mx-auto w-full relative z-10">
+            <div class="bg-white rounded-[3rem] p-6 md:p-8 border-4 border-zoo-green shadow-kawaii relative min-h-[400px]">
+                <div class="absolute -top-6 left-6 text-5xl animate-bounce-slight">📖</div>
+                <h2 class="font-display text-4xl text-zoo-green mb-8 text-center mt-4">
+                    Our Diary
+                </h2>
+                
+                <div id="empty-diary" class="text-center py-10">
+                    <p class="text-2xl font-display text-gray-400 mb-4">No memories saved yet! 🥺</p>
+                    <button onclick="navTo('page-memories')" class="btn-press px-6 py-3 bg-zoo-orange text-white rounded-full font-display text-xl border-4 border-orange-300 shadow-kawaii-orange">
+                        Make a Memory! ✨
+                    </button>
+                </div>
+
+                <div id="diary-container" class="grid grid-cols-1 sm:grid-cols-2 gap-6 hidden">
+                    <!-- Dynamic memory cards will be injected here -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Floating Cute Bottom Navigation -->
+    <nav class="fixed bottom-6 left-1/2 transform -translate-x-1/2 w-[95%] max-w-lg z-40">
+        <div class="bottom-nav-pill px-2 py-2 flex justify-between items-center bg-white">
+            <button onclick="navTo('page-home')" class="nav-btn w-1/5 py-2 rounded-full text-zoo-orange flex flex-col items-center gap-1 transition-all active:scale-90 hover:bg-orange-50" id="nav-page-home">
+                <i class="fa-solid fa-house text-xl md:text-2xl"></i>
+                <span class="text-[10px] md:text-[11px] font-display tracking-wider">Home</span>
+            </button>
+            <button onclick="navTo('page-memories')" class="nav-btn w-1/5 py-2 rounded-full text-gray-400 flex flex-col items-center gap-1 transition-all active:scale-90 hover:bg-orange-50" id="nav-page-memories">
+                <i class="fa-solid fa-camera-retro text-xl md:text-2xl"></i>
+                <span class="text-[10px] md:text-[11px] font-display tracking-wider">Memories</span>
+            </button>
+            <button onclick="navTo('page-diary')" class="nav-btn w-1/5 py-2 rounded-full text-gray-400 flex flex-col items-center gap-1 transition-all active:scale-90 hover:bg-green-50" id="nav-page-diary">
+                <i class="fa-solid fa-book text-xl md:text-2xl"></i>
+                <span class="text-[10px] md:text-[11px] font-display tracking-wider">Diary</span>
+            </button>
+            <button onclick="navTo('page-hugs')" class="nav-btn w-1/5 py-2 rounded-full text-gray-400 flex flex-col items-center gap-1 transition-all active:scale-90 hover:bg-pink-50" id="nav-page-hugs">
+                <i class="fa-solid fa-heart text-xl md:text-2xl"></i>
+                <span class="text-[10px] md:text-[11px] font-display tracking-wider">Hugs</span>
+            </button>
+            <button onclick="navTo('page-calls')" class="nav-btn w-1/5 py-2 rounded-full text-gray-400 flex flex-col items-center gap-1 transition-all active:scale-90 hover:bg-blue-50" id="nav-page-calls">
+                <i class="fa-solid fa-walkie-talkie text-xl md:text-2xl"></i>
+                <span class="text-[10px] md:text-[11px] font-display tracking-wider">Call</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hug Modal -->
+    <div id="hugModal" class="fixed inset-0 bg-pink-100/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 transition-opacity">
+        <div class="bg-white p-8 rounded-[3rem] border-4 border-zoo-pink max-w-sm w-full text-center shadow-kawaii transform scale-95 transition-transform duration-300" id="hugModalContent">
+            <h3 class="font-display text-5xl text-zoo-pink mb-6 animate-bounce-slight" style="-webkit-text-stroke: 1px #f06292; text-shadow: 2px 2px 0px #f8bbd0;">SQUEEEEEZE! 🤗</h3>
+            <div class="rounded-3xl overflow-hidden border-4 border-dashed border-zoo-pink bg-pink-50 p-2 mb-6 transform -rotate-2">
+                <img src="https://media.giphy.com/media/l41YkxvU8c7J7Bba0/giphy.gif" alt="Cute Hug" class="w-full object-cover rounded-2xl">
+            </div>
+            <p class="text-2xl text-zoo-pink font-display tracking-wide mb-8">Sending infinite virtual hugs! <br><span class="text-4xl mt-3 block animate-wiggle">🦊❤️🐰</span></p>
+            <button onclick="closeHugModal()" class="btn-press w-full py-4 bg-zoo-pink text-white font-display text-3xl rounded-full border-4 border-pink-300 shadow-kawaii-pink transition-all">
+                Yay! ✨
+            </button>
+        </div>
+    </div>
+
+    <!-- Video Call Modal -->
+    <div id="callModal" class="fixed inset-0 bg-blue-900/95 hidden z-50 flex flex-col items-center justify-center p-2 sm:p-6">
+        <div class="w-full flex justify-between items-center mb-4 text-white max-w-6xl px-4">
+            <h3 class="font-display text-3xl tracking-wide text-zoo-blue bg-white px-4 py-2 rounded-full border-4 border-zoo-blue">
+                <i class="fa-solid fa-shield-cat mr-2"></i> ZPD Line
+            </h3>
+            <button onclick="endVideoCall()" class="btn-press px-6 py-3 bg-red-400 text-white rounded-full font-display text-xl border-4 border-red-300 shadow-[4px_4px_0px_0px_#ef5350] flex items-center gap-2 transition-all">
+                <i class="fa-solid fa-phone-slash"></i> Hang Up
+            </button>
+        </div>
+        <div id="jitsi-container" class="w-full max-w-6xl h-full max-h-[85vh] bg-blue-50 rounded-[2rem] border-8 border-zoo-blue overflow-hidden shadow-kawaii-blue"></div>
+    </div>
+
+    <!-- Cute Toast Notification -->
+    <div id="toast" class="fixed top-8 right-8 bg-white border-4 px-6 py-4 rounded-3xl shadow-kawaii transform -translate-y-24 opacity-0 transition-all duration-300 z-[100] flex items-center gap-3 pointer-events-none">
+        <div id="toastIcon" class="text-3xl animate-bounce-slight"></div>
+        <span id="toastMsg" class="text-xl font-display tracking-wide">Saved!</span>
+    </div>
+
+    <!-- Firebase Cloud Storage Module -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Initialize connection
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        let currentUser = null;
+
+        // Secure Authentication
+        const initAuth = async () => {
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                await signInWithCustomToken(auth, __initial_auth_token);
+            } else {
+                await signInAnonymously(auth);
+            }
+        };
+        initAuth();
+
+        // Listen for Real-Time Diary Updates
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            if (user) {
+                // We use a shared 'public' path so both Jhingy and Posto see the exact same diary entries!
+                const diaryRef = collection(db, 'artifacts', appId, 'public', 'data', 'diary_entries');
+                
+                onSnapshot(diaryRef, (snapshot) => {
+                    const entries = [];
+                    snapshot.forEach(doc => {
+                        entries.push({ docId: doc.id, ...doc.data() });
+                    });
+                    
+                    // Sort newest first
+                    entries.sort((a, b) => b.timestamp - a.timestamp);
+                    
+                    if (window.renderCloudDiary) {
+                        window.renderCloudDiary(entries);
+                    }
+                }, (error) => {
+                    console.error("Diary sync error:", error);
+                });
+            }
+        });
+
+        // Expose save function to the rest of the app
+        window.saveToCloudDiary = async (memoryData) => {
+            if (!currentUser) return false;
+            try {
+                const diaryRef = collection(db, 'artifacts', appId, 'public', 'data', 'diary_entries');
+                await addDoc(diaryRef, { ...memoryData, timestamp: Date.now() });
+                return true;
+            } catch (e) {
+                console.error("Cloud save failed", e);
+                return false;
+            }
+        };
+    </script>
+
+    <script>
+        // --- Single Page App Navigation ---
+        function navTo(pageId) {
+            document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-zoo-orange', 'text-zoo-pink', 'text-zoo-blue', 'text-zoo-green');
+                btn.classList.add('text-gray-400');
+            });
+
+            document.getElementById(pageId).classList.add('active');
+            
+            const activeBtn = document.getElementById('nav-' + pageId);
+            activeBtn.classList.remove('text-gray-400');
+            if(pageId === 'page-hugs') activeBtn.classList.add('text-zoo-pink');
+            else if(pageId === 'page-calls') activeBtn.classList.add('text-zoo-blue');
+            else if(pageId === 'page-diary') activeBtn.classList.add('text-zoo-green');
+            else activeBtn.classList.add('text-zoo-orange');
+        }
+
+        // --- Dynamic Background Setup ---
+        function createFloatingElements() {
+            const bgContainer = document.getElementById('dynamic-bg');
+            const elements = ['🥕', '🐾', '🐰', '🦊', '✨', '🌸', '💕'];
+            
+            for(let i = 0; i < 20; i++) {
+                const el = document.createElement('div');
+                el.innerText = elements[Math.floor(Math.random() * elements.length)];
+                el.className = 'floating-element text-3xl md:text-4xl';
+                
+                // Randomize position, animation duration, and delay
+                el.style.left = `${Math.random() * 100}vw`;
+                el.style.animationDuration = `${10 + Math.random() * 25}s`;
+                el.style.animationDelay = `${Math.random() * 10}s`;
+                
+                bgContainer.appendChild(el);
+            }
+        }
+
+        // --- Drive API & Memory Logic ---
+        let fetchedDriveImages = [
+            "https://images.unsplash.com/photo-1560807707-8cc77767d783?auto=format&fit=crop&q=80&w=400&h=400", 
+            "https://images.unsplash.com/photo-1585110396000-c9fd4e4e5030?auto=format&fit=crop&q=80&w=400&h=400",
+            "https://images.unsplash.com/photo-1516934024742-b461fba47600?auto=format&fit=crop&q=80&w=400&h=400"
+        ];
+        let currentToken = "";
+
+        async function connectDrive() {
+            const link = document.getElementById('driveLink').value;
+            const key = document.getElementById('apiKey').value;
+            const statusEl = document.getElementById('driveStatus');
+            
+            statusEl.classList.remove('hidden');
+            
+            if(!link || !key) {
+                statusEl.innerHTML = "Oops! Need both Link and Key 🥺";
+                statusEl.className = "text-lg text-center font-display mt-2 text-rose-500 block bg-rose-50 p-2 rounded-xl border-2 border-dashed border-rose-300";
+                return;
+            }
+
+            const folderMatch = link.match(/folders\/([a-zA-Z0-9_-]+)/) || link.match(/id=([a-zA-Z0-9_-]+)/);
+            if(!folderMatch) {
+                statusEl.innerHTML = "Oh no! Invalid Folder Link 😭";
+                statusEl.className = "text-lg text-center font-display mt-2 text-rose-500 block bg-rose-50 p-2 rounded-xl border-2 border-dashed border-rose-300";
+                return;
+            }
+
+            const folderId = folderMatch[1];
+            statusEl.innerHTML = "Fetching magic memories... ✨🐾";
+            statusEl.className = "text-lg text-center font-display mt-2 text-zoo-blue block bg-blue-50 p-2 rounded-xl border-2 border-dashed border-zoo-blue animate-pulse";
+
+            try {
+                const query = encodeURIComponent(`'${folderId}' in parents and mimeType contains 'image/'`);
+                const url = `https://www.googleapis.com/drive/v3/files?q=${query}&fields=files(id,name)&key=${key}`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if(data.error) throw new Error(data.error.message);
+                if(!data.files || data.files.length === 0) throw new Error("No pictures found!");
+
+                fetchedDriveImages = data.files.map(file => `https://drive.google.com/uc?export=view&id=${file.id}`);
+                
+                statusEl.innerHTML = `Yay! Found ${fetchedDriveImages.length} memories! 🎉`;
+                statusEl.className = "text-lg text-center font-display mt-2 text-zoo-green block bg-green-50 p-2 rounded-xl border-2 border-dashed border-zoo-green";
+                showToast("Connected! 🐰", "border-zoo-green text-zoo-green", "🐾");
+                
+                loadRandomImage();
+            } catch (error) {
+                console.error("Drive Error:", error);
+                statusEl.innerHTML = `Error: ${error.message} 😢`;
+                statusEl.className = "text-lg text-center font-display mt-2 text-rose-500 block bg-rose-50 p-2 rounded-xl border-2 border-dashed border-rose-300";
+            }
+        }
+
+        function generateToken() {
+            return "ZPD-" + Math.floor(1000 + Math.random() * 9000); // Shorter, cuter token
+        }
+
+        function loadRandomImage() {
+            const imgEl = document.getElementById('memoryImage');
+            const tokenEl = document.getElementById('imageToken');
+            
+            imgEl.style.opacity = 0.3;
+            imgEl.style.transform = 'scale(0.9) rotate(5deg)';
+            
+            setTimeout(() => {
+                const randomSrc = fetchedDriveImages[Math.floor(Math.random() * fetchedDriveImages.length)];
+                imgEl.src = randomSrc;
+                currentToken = generateToken();
+                tokenEl.innerText = `ID: ${currentToken}`;
+                imgEl.style.opacity = 1;
+                imgEl.style.transform = 'scale(1) rotate(0deg)';
+                imgEl.style.transition = 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            }, 300);
+            
+            document.getElementById('memoryText').value = "";
+            updateLineCount();
+        }
+
+        async function saveMemory() {
+            const text = document.getElementById('memoryText').value.trim();
+            const lines = text.split('\n').filter(line => line.trim() !== '');
+            
+            if (lines.length === 0) {
+                showToast("Write something cute first! 🥺", "border-rose-400 text-rose-500", "✍️");
+                return;
+            }
+
+            const currentImgSrc = document.getElementById('memoryImage').src;
+            const memoryData = {
+                id: currentToken,
+                date: new Date().toLocaleDateString(),
+                text: text,
+                image: currentImgSrc
+            };
+
+            // --- 1. Save to Real-Time Cloud Diary ---
+            if (window.saveToCloudDiary) {
+                const success = await window.saveToCloudDiary(memoryData);
+                if (!success) {
+                    showToast("Oops! Cloud connection issue 🥺", "border-rose-400 text-rose-500", "⚠️");
+                    return;
+                }
+            }
+
+            // --- 2. Download Local Text File Bonus ---
+            const fileContent = `🌸 JHINGY & POSTO'S MEMORY BANK 🌸\n` +
+                                `===================================\n\n` +
+                                `Magic ID: ${currentToken}\n` +
+                                `Date: ${new Date().toLocaleDateString()}\n\n` +
+                                `Our Story:\n${text}\n\n` +
+                                `===================================\n` +
+                                `Love you forever! 🦊❤️🐰`;
+
+            const blob = new Blob([fileContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Cute_Memory_${currentToken}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showToast("Saved to our Cloud Diary! ☁️✨", "border-zoo-blue text-zoo-blue", "💖");
+            
+            // Bring user to diary page to see it instantly sync
+            navTo('page-diary');
+            setTimeout(() => loadRandomImage(), 1000);
+        }
+
+        window.renderCloudDiary = function(entries) {
+            const emptyState = document.getElementById('empty-diary');
+            const container = document.getElementById('diary-container');
+            
+            if (!entries || entries.length === 0) {
+                emptyState.classList.remove('hidden');
+                container.classList.add('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            container.classList.remove('hidden');
+            
+            container.innerHTML = entries.map(mem => `
+                <div class="bg-orange-50 rounded-2xl p-4 border-4 border-dashed border-zoo-orange transform rotate-1 hover:rotate-0 transition-transform">
+                    <img src="${mem.image}" class="w-full h-40 object-cover rounded-xl border-2 border-zoo-orange mb-3" alt="Memory">
+                    <p class="text-xs text-gray-500 font-sans font-bold mb-2">ID: ${mem.id} | ${mem.date}</p>
+                    <p class="text-gray-700 font-sans whitespace-pre-line text-sm border-t-2 border-dashed border-orange-200 pt-2">${mem.text}</p>
+                </div>
+            `).join('');
+        };
+
+        document.getElementById('memoryText').addEventListener('input', updateLineCount);
+
+        function updateLineCount() {
+            const text = document.getElementById('memoryText').value;
+            const lines = text.split('\n').length;
+            const counter = document.getElementById('lineCount');
+            
+            if(text.trim() === "") {
+                counter.innerText = "0 / 5 lines";
+                counter.className = "text-gray-400 bg-gray-100 px-3 py-1 rounded-full border-2 border-gray-200";
+            } else if (lines > 5) {
+                counter.innerText = `${lines} lines (So much love! 💕)`;
+                counter.className = "text-zoo-pink bg-pink-100 px-3 py-1 rounded-full border-2 border-zoo-pink font-bold";
+            } else {
+                counter.innerText = `${lines} / 5 lines`;
+                counter.className = "text-zoo-green bg-green-100 px-3 py-1 rounded-full border-2 border-zoo-green font-bold";
+            }
+        }
+
+        // --- Hug Modal Logic ---
+        function requestHug() {
+            const modal = document.getElementById('hugModal');
+            const content = document.getElementById('hugModalContent');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'translate-y-10');
+                content.classList.add('scale-100', 'translate-y-0');
+            }, 10);
+        }
+
+        function closeHugModal() {
+            const modal = document.getElementById('hugModal');
+            const content = document.getElementById('hugModalContent');
+            content.classList.remove('scale-100', 'translate-y-0');
+            content.classList.add('scale-95', 'translate-y-10');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // --- Video Call Logic ---
+        let jitsiApi = null;
+
+        function startVideoCall() {
+            document.getElementById('callModal').classList.remove('hidden');
+            
+            const domain = 'meet.jit.si';
+            const options = {
+                roomName: 'JhingyLovesPostoZootopiaSuperSecretLine',
+                width: '100%',
+                height: '100%',
+                parentNode: document.querySelector('#jitsi-container'),
+                userInfo: { displayName: 'Zootopia Cutie' },
+                configOverwrite: { 
+                    startWithAudioMuted: false,
+                    startWithVideoMuted: false,
+                    prejoinPageEnabled: false
+                }
+            };
+            
+            if (!jitsiApi) {
+                jitsiApi = new JitsiMeetExternalAPI(domain, options);
+            }
+        }
+
+        function endVideoCall() {
+            if (jitsiApi) {
+                jitsiApi.dispose();
+                jitsiApi = null;
+            }
+            document.getElementById('callModal').classList.add('hidden');
+        }
+
+        // --- Utils ---
+        function showToast(msg, borderTextClass, emoji) {
+            const toast = document.getElementById('toast');
+            
+            document.getElementById('toastIcon').innerText = emoji;
+            document.getElementById('toastMsg').innerText = msg;
+            
+            toast.className = `fixed top-8 right-8 bg-white border-4 ${borderTextClass} px-6 py-4 rounded-3xl shadow-kawaii transform transition-all duration-400 z-[100] flex items-center gap-4 pointer-events-none`;
+            
+            setTimeout(() => toast.classList.remove('-translate-y-24', 'opacity-0'), 10);
+            setTimeout(() => toast.classList.add('-translate-y-24', 'opacity-0'), 3500);
+        }
+
+        window.onload = () => {
+            loadRandomImage();
+            createFloatingElements();
+            // renderDiary() removed, because the Cloud database will automatically call renderCloudDiary() as soon as data loads!
+        };
+
+    </script>
+</body>
+</html>
