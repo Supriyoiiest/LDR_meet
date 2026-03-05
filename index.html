@@ -163,6 +163,20 @@
             transform: translateY(4px);
             box-shadow: 0px 0px 0px 0px !important;
         }
+
+        /* Radio button cute styles */
+        input[type="radio"]:checked + span.author-jhingy {
+            background-color: #fff3e0;
+            border-color: #ff8a65;
+            color: #ff8a65;
+            box-shadow: 2px 2px 0px 0px #ff8a65;
+        }
+        input[type="radio"]:checked + span.author-posto {
+            background-color: #fce4ec;
+            border-color: #f06292;
+            color: #f06292;
+            box-shadow: 2px 2px 0px 0px #f06292;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center pb-32 text-slate-800 overflow-x-hidden font-bold">
@@ -191,27 +205,6 @@
                 <h2 class="font-display text-3xl text-zoo-orange mb-2">Ready for duty! <span class="inline-block animate-wiggle">🐾</span></h2>
                 <p class="text-lg text-gray-600 font-bold mb-2">Tap the cute buttons below to explore!</p>
             </div>
-
-            <!-- Drive API Settings -->
-            <div class="bg-white rounded-[2rem] p-6 md:p-8 border-4 border-zoo-blue shadow-kawaii transform rotate-1">
-                <h3 class="font-display text-3xl text-zoo-blue mb-4"><i class="fa-brands fa-google-drive mr-2 text-2xl"></i> Magic Folder Link!</h3>
-                <p class="text-base text-gray-500 mb-6 font-bold">Connect your Google Drive folder to load our real memories! ✨</p>
-                
-                <div class="space-y-5">
-                    <div>
-                        <label class="block text-lg font-bold text-zoo-blue ml-2 mb-2">Public Drive Folder Link 📂</label>
-                        <input type="text" id="driveLink" placeholder="Paste link here..." class="w-full p-4 bg-white border-4 border-zoo-blue rounded-2xl outline-none focus:bg-blue-50 transition-colors shadow-[inset_0_4px_4px_rgba(0,0,0,0.05)] text-lg">
-                    </div>
-                    <div>
-                        <label class="block text-lg font-bold text-zoo-blue ml-2 mb-2">Google API Key 🔑</label>
-                        <input type="password" id="apiKey" placeholder="Secret key..." class="w-full p-4 bg-white border-4 border-zoo-blue rounded-2xl outline-none focus:bg-blue-50 transition-colors shadow-[inset_0_4px_4px_rgba(0,0,0,0.05)] text-lg">
-                    </div>
-                    <button onclick="connectDrive()" class="btn-press w-full py-4 bg-zoo-blue text-white font-display text-2xl tracking-wider rounded-2xl border-4 border-blue-400 shadow-kawaii-blue transition-all">
-                        Connect Drive! 🚀
-                    </button>
-                    <p id="driveStatus" class="text-base text-center font-bold text-zoo-orange hidden bg-orange-100 p-2 rounded-xl border-2 border-dashed border-zoo-orange"></p>
-                </div>
-            </div>
         </section>
 
         <!-- PAGE 2: MEMORY MAKER -->
@@ -220,7 +213,7 @@
                 <!-- Cute corner decoration -->
                 <div class="absolute -top-6 -right-6 text-5xl animate-wiggle">✨</div>
                 
-                <div class="flex justify-between items-center mb-10 relative z-10">
+                <div class="flex justify-between items-center mb-6 relative z-10">
                     <h2 class="font-display text-4xl text-zoo-orange">
                         Memories 📸
                     </h2>
@@ -228,9 +221,21 @@
                         <i class="fa-solid fa-rotate"></i> Next
                     </button>
                 </div>
+
+                <!-- Who is saving this? -->
+                <div class="flex justify-center gap-3 mb-8 relative z-10 bg-gray-50 py-3 rounded-2xl border-2 border-dashed border-gray-200">
+                    <label class="cursor-pointer">
+                        <input type="radio" name="author" value="Jhingy 🦊" class="peer sr-only" checked>
+                        <span class="author-jhingy px-4 py-2 rounded-xl border-2 border-gray-300 font-display text-lg text-gray-400 transition-all inline-block">I'm Jhingy 🦊</span>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="author" value="Posto 🐰" class="peer sr-only">
+                        <span class="author-posto px-4 py-2 rounded-xl border-2 border-gray-300 font-display text-lg text-gray-400 transition-all inline-block">I'm Posto 🐰</span>
+                    </label>
+                </div>
                 
                 <div class="polaroid mx-auto w-full max-w-[240px] mb-8 relative z-10">
-                    <img id="memoryImage" src="https://images.unsplash.com/photo-1560807707-8cc77767d783?auto=format&fit=crop&q=80&w=400&h=400" alt="Memory" class="w-full aspect-square object-cover rounded-md border-2 border-gray-200">
+                    <img id="memoryImage" src="https://placehold.co/400x400/ff8a65/ffffff?text=Fox+Memory" alt="Memory" class="w-full aspect-square object-cover rounded-md border-2 border-gray-200">
                     <p class="text-center mt-4 text-sm text-zoo-orange font-bold tracking-wider font-sans" id="imageToken">#TOKEN</p>
                 </div>
 
@@ -472,41 +477,31 @@
             }
         }
 
+        // --- BACKEND CONFIGURATION ---
+        // 👇 ADD YOUR KEYS HERE:
+        const APP_CONFIG = {
+            driveFolderId: "1_6SrpNjoaWmizX39HTrTpkpE1VHZtYt6", // <-- Replace with your Folder ID 
+            apiKey: "AIzaSyDuBNNJ-LcBK-8HTjtWfWjxryimFvZL3GI"         // <-- Replace with your Google API Key
+        };
+
         // --- Drive API & Memory Logic ---
         let fetchedDriveImages = [
-            "https://images.unsplash.com/photo-1560807707-8cc77767d783?auto=format&fit=crop&q=80&w=400&h=400", 
-            "https://images.unsplash.com/photo-1585110396000-c9fd4e4e5030?auto=format&fit=crop&q=80&w=400&h=400",
-            "https://images.unsplash.com/photo-1516934024742-b461fba47600?auto=format&fit=crop&q=80&w=400&h=400"
+            "https://placehold.co/400x400/ff8a65/ffffff?text=Waiting+for+Memories+🌸", 
+            "https://placehold.co/400x400/81c784/ffffff?text=Waiting+for+Memories+✨",
+            "https://placehold.co/400x400/4fc3f7/ffffff?text=Waiting+for+Memories+💖"
         ];
         let currentToken = "";
 
         async function connectDrive() {
-            const link = document.getElementById('driveLink').value;
-            const key = document.getElementById('apiKey').value;
-            const statusEl = document.getElementById('driveStatus');
-            
-            statusEl.classList.remove('hidden');
-            
-            if(!link || !key) {
-                statusEl.innerHTML = "Oops! Need both Link and Key 🥺";
-                statusEl.className = "text-lg text-center font-display mt-2 text-rose-500 block bg-rose-50 p-2 rounded-xl border-2 border-dashed border-rose-300";
+            // Silently abort if keys aren't added yet
+            if(!APP_CONFIG.driveFolderId || !APP_CONFIG.apiKey || APP_CONFIG.driveFolderId === "YOUR_FOLDER_ID_HERE") {
+                console.log("No API keys detected. Using default placeholders.");
                 return;
             }
-
-            const folderMatch = link.match(/folders\/([a-zA-Z0-9_-]+)/) || link.match(/id=([a-zA-Z0-9_-]+)/);
-            if(!folderMatch) {
-                statusEl.innerHTML = "Oh no! Invalid Folder Link 😭";
-                statusEl.className = "text-lg text-center font-display mt-2 text-rose-500 block bg-rose-50 p-2 rounded-xl border-2 border-dashed border-rose-300";
-                return;
-            }
-
-            const folderId = folderMatch[1];
-            statusEl.innerHTML = "Fetching magic memories... ✨🐾";
-            statusEl.className = "text-lg text-center font-display mt-2 text-zoo-blue block bg-blue-50 p-2 rounded-xl border-2 border-dashed border-zoo-blue animate-pulse";
 
             try {
-                const query = encodeURIComponent(`'${folderId}' in parents and mimeType contains 'image/'`);
-                const url = `https://www.googleapis.com/drive/v3/files?q=${query}&fields=files(id,name)&key=${key}`;
+                const query = encodeURIComponent(`'${APP_CONFIG.driveFolderId}' in parents and mimeType contains 'image/'`);
+                const url = `https://www.googleapis.com/drive/v3/files?q=${query}&fields=files(id,name,thumbnailLink)&key=${APP_CONFIG.apiKey}`;
                 
                 const response = await fetch(url);
                 const data = await response.json();
@@ -514,17 +509,19 @@
                 if(data.error) throw new Error(data.error.message);
                 if(!data.files || data.files.length === 0) throw new Error("No pictures found!");
 
-                fetchedDriveImages = data.files.map(file => `https://drive.google.com/uc?export=view&id=${file.id}`);
+                // Strongly filter out any images that don't have a thumbnail
+                fetchedDriveImages = data.files
+                    .filter(file => file.thumbnailLink)
+                    .map(file => file.thumbnailLink.replace(/=s\d+$/, '') + '=s800');
+                    
+                if (fetchedDriveImages.length === 0) {
+                    throw new Error("No viewable thumbnails found in folder!");
+                }
                 
-                statusEl.innerHTML = `Yay! Found ${fetchedDriveImages.length} memories! 🎉`;
-                statusEl.className = "text-lg text-center font-display mt-2 text-zoo-green block bg-green-50 p-2 rounded-xl border-2 border-dashed border-zoo-green";
-                showToast("Connected! 🐰", "border-zoo-green text-zoo-green", "🐾");
-                
+                // Reload the image view now that real images are loaded
                 loadRandomImage();
             } catch (error) {
-                console.error("Drive Error:", error);
-                statusEl.innerHTML = `Error: ${error.message} 😢`;
-                statusEl.className = "text-lg text-center font-display mt-2 text-rose-500 block bg-rose-50 p-2 rounded-xl border-2 border-dashed border-rose-300";
+                console.error("Drive Sync Error:", error);
             }
         }
 
@@ -556,6 +553,7 @@
         async function saveMemory() {
             const text = document.getElementById('memoryText').value.trim();
             const lines = text.split('\n').filter(line => line.trim() !== '');
+            const author = document.querySelector('input[name="author"]:checked').value;
             
             if (lines.length === 0) {
                 showToast("Write something cute first! 🥺", "border-rose-400 text-rose-500", "✍️");
@@ -567,7 +565,8 @@
                 id: currentToken,
                 date: new Date().toLocaleDateString(),
                 text: text,
-                image: currentImgSrc
+                image: currentImgSrc,
+                author: author
             };
 
             // --- 1. Save to Real-Time Cloud Diary ---
@@ -583,7 +582,8 @@
             const fileContent = `🌸 JHINGY & POSTO'S MEMORY BANK 🌸\n` +
                                 `===================================\n\n` +
                                 `Magic ID: ${currentToken}\n` +
-                                `Date: ${new Date().toLocaleDateString()}\n\n` +
+                                `Date: ${new Date().toLocaleDateString()}\n` +
+                                `Saved By: ${author}\n\n` +
                                 `Our Story:\n${text}\n\n` +
                                 `===================================\n` +
                                 `Love you forever! 🦊❤️🐰`;
@@ -618,13 +618,24 @@
             emptyState.classList.add('hidden');
             container.classList.remove('hidden');
             
-            container.innerHTML = entries.map(mem => `
+            container.innerHTML = entries.map(mem => {
+                const authorClass = mem.author && mem.author.includes('Jhingy') 
+                    ? 'bg-orange-100 text-zoo-orange border-2 border-zoo-orange' 
+                    : 'bg-pink-100 text-zoo-pink border-2 border-zoo-pink';
+                
+                const authorDisplay = mem.author || 'Anonymous';
+
+                return `
                 <div class="bg-orange-50 rounded-2xl p-4 border-4 border-dashed border-zoo-orange transform rotate-1 hover:rotate-0 transition-transform">
-                    <img src="${mem.image}" class="w-full h-40 object-cover rounded-xl border-2 border-zoo-orange mb-3" alt="Memory">
-                    <p class="text-xs text-gray-500 font-sans font-bold mb-2">ID: ${mem.id} | ${mem.date}</p>
+                    <img src="${mem.image}" class="w-full h-40 object-cover rounded-xl border-2 border-zoo-orange mb-3" alt="Memory" onerror="this.src='https://placehold.co/400x400/ff8a65/ffffff?text=Missing+Memory'">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs text-gray-500 font-sans font-bold">ID: ${mem.id} | ${mem.date}</span>
+                        <span class="text-xs font-display px-2 py-1 rounded-full ${authorClass}">${authorDisplay}</span>
+                    </div>
                     <p class="text-gray-700 font-sans whitespace-pre-line text-sm border-t-2 border-dashed border-orange-200 pt-2">${mem.text}</p>
                 </div>
-            `).join('');
+                `;
+            }).join('');
         };
 
         document.getElementById('memoryText').addEventListener('input', updateLineCount);
@@ -716,6 +727,7 @@
         window.onload = () => {
             loadRandomImage();
             createFloatingElements();
+            connectDrive(); // Auto-sync on load
             // renderDiary() removed, because the Cloud database will automatically call renderCloudDiary() as soon as data loads!
         };
 
