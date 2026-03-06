@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://meet.jit.si/external_api.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -482,6 +483,18 @@
         </div>
     </div>
 
+    <!-- Delete Confirm Modal -->
+    <div id="deleteConfirmModal" class="fixed inset-0 bg-red-100/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 transition-opacity">
+        <div class="bg-white p-6 sm:p-8 rounded-[2rem] sm:rounded-[3rem] border-4 border-red-400 max-w-sm w-full text-center shadow-kawaii transform scale-95 transition-transform duration-300" id="deleteConfirmModalContent">
+            <h3 class="font-display text-3xl sm:text-4xl text-red-500 mb-3 sm:mb-4">Delete this? 🥺</h3>
+            <p class="text-lg sm:text-xl text-gray-600 font-bold mb-6 sm:mb-8">Are you sure you want to remove this memory forever?</p>
+            <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                <button onclick="closeDeleteModal()" class="w-full sm:w-1/2 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl transition-all btn-press">Keep it!</button>
+                <button onclick="confirmDeleteEntry()" class="w-full sm:w-1/2 py-3 bg-red-500 hover:bg-red-600 text-white font-display text-xl rounded-xl border-4 border-red-600 shadow-[2px_2px_0px_0px_#dc2626] transition-all btn-press">Yes, delete</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Hug Modal -->
     <div id="hugModal" class="fixed inset-0 bg-pink-100/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 transition-opacity">
         <div class="bg-white p-6 sm:p-8 rounded-[2rem] sm:rounded-[3rem] border-4 border-zoo-pink max-w-sm w-full text-center shadow-kawaii transform scale-95 transition-transform duration-300" id="hugModalContent">
@@ -942,13 +955,17 @@
                     ? 'bg-orange-100 text-zoo-orange border-2 border-zoo-orange' 
                     : 'bg-pink-100 text-zoo-pink border-2 border-zoo-pink';
                 const authorDisplay = mem.author || 'Anonymous';
+                const idToDelete = mem.id || mem.timestamp;
 
                 return `
                 <div class="bg-orange-50 rounded-xl sm:rounded-2xl p-3 sm:p-4 border-2 sm:border-4 border-dashed border-zoo-orange transform rotate-1 hover:rotate-0 transition-transform">
                     <img src="${mem.image}" class="w-full h-32 sm:h-40 object-cover rounded-lg sm:rounded-xl border-2 border-zoo-orange mb-2 sm:mb-3" alt="Memory" onerror="this.onerror=null; this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'400\\' height=\\'400\\' viewBox=\\'0 0 400 400\\'%3E%3Crect width=\\'400\\' height=\\'400\\' fill=\\'%23ffccbc\\'/%3E%3Ctext x=\\'50%25\\' y=\\'50%25\\' font-family=\\'sans-serif\\' font-size=\\'22\\' font-weight=\\'bold\\' fill=\\'%23ffffff\\' text-anchor=\\'middle\\' dominant-baseline=\\'middle\\'%3ESafe %F0%9F%92%96%3C/text%3E%3C/svg%3E';">
                     <div class="flex justify-between items-center mb-1 sm:mb-2">
-                        <span class="text-[10px] sm:text-xs text-gray-500 font-sans font-bold">ID: ${mem.id} | ${mem.date}</span>
-                        <span class="text-[10px] sm:text-xs font-display px-2 py-1 rounded-full ${authorClass}">${authorDisplay}</span>
+                        <span class="text-[10px] sm:text-xs text-gray-500 font-sans font-bold">ID: ${mem.id || 'N/A'} | ${mem.date}</span>
+                        <div class="flex gap-2 items-center">
+                            <button onclick="promptDeleteEntry('diary', '${idToDelete}')" class="text-red-400 hover:text-red-600 transition-colors"><i class="fa-solid fa-trash-can"></i></button>
+                            <span class="text-[10px] sm:text-xs font-display px-2 py-1 rounded-full ${authorClass}">${authorDisplay}</span>
+                        </div>
                     </div>
                     <p class="text-gray-700 font-sans whitespace-pre-line text-xs sm:text-sm border-t-2 border-dashed border-orange-200 pt-2">${mem.text}</p>
                 </div>
@@ -970,6 +987,7 @@
             }
 
             const journalData = {
+                id: "JRN-" + Date.now(),
                 type: type,
                 title: title,
                 content: content,
@@ -1024,6 +1042,7 @@
                     : 'bg-pink-100 text-zoo-pink border-2 border-zoo-pink';
                 const authorDisplay = entry.author || 'Anonymous';
                 const typeIcon = entry.type === "Journal" ? "📝" : "📚";
+                const idToDelete = entry.id || entry.timestamp;
 
                 return `
                 <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 border-2 sm:border-4 border-zoo-purple shadow-[2px_2px_0px_0px_#e9d5ff] sm:shadow-[4px_4px_0px_0px_#e9d5ff]">
@@ -1032,7 +1051,10 @@
                             <span class="text-xs sm:text-sm font-bold text-gray-500 block mb-0.5 sm:mb-1">${entry.date}</span>
                             <h4 class="font-display text-xl sm:text-2xl text-zoo-purple">${typeIcon} ${entry.title}</h4>
                         </div>
-                        <span class="text-[10px] sm:text-sm font-display px-2 sm:px-3 py-1 rounded-full ${authorClass}">${authorDisplay}</span>
+                        <div class="flex flex-col items-end gap-2">
+                            <span class="text-[10px] sm:text-sm font-display px-2 sm:px-3 py-1 rounded-full ${authorClass}">${authorDisplay}</span>
+                            <button onclick="promptDeleteEntry('journal', '${idToDelete}')" class="text-red-400 hover:text-red-600 text-xs font-bold transition-colors"><i class="fa-solid fa-trash-can"></i> Delete</button>
+                        </div>
                     </div>
                     <p class="text-gray-700 font-sans whitespace-pre-line text-sm sm:text-lg border-t-2 border-dashed border-purple-200 pt-2 sm:pt-3">${entry.content}</p>
                 </div>
@@ -1040,6 +1062,68 @@
             }).join('');
         };
 
+        // --- OPTIMISTIC DELETE LOGIC ---
+        let itemToDelete = { type: null, id: null };
+
+        function promptDeleteEntry(type, id) {
+            itemToDelete = { type, id };
+            const modal = document.getElementById('deleteConfirmModal');
+            const content = document.getElementById('deleteConfirmModalContent');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'translate-y-10');
+                content.classList.add('scale-100', 'translate-y-0');
+            }, 10);
+        }
+
+        function closeDeleteModal() {
+            const modal = document.getElementById('deleteConfirmModal');
+            const content = document.getElementById('deleteConfirmModalContent');
+            content.classList.remove('scale-100', 'translate-y-0');
+            content.classList.add('scale-95', 'translate-y-10');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+            itemToDelete = { type: null, id: null };
+        }
+
+        async function confirmDeleteEntry() {
+            const { type, id } = itemToDelete;
+            if (!type || !id) return closeDeleteModal();
+
+            let cloudSuccess = false;
+
+            if (APP_CONFIG.gasUrl) {
+                cloudSuccess = await updateGlobalData((data) => {
+                    if (type === 'diary' && data.diary) {
+                        data.diary = data.diary.filter(item => (item.id || item.timestamp).toString() !== id.toString());
+                    } else if (type === 'journal' && data.journal) {
+                        data.journal = data.journal.filter(item => (item.id || item.timestamp).toString() !== id.toString());
+                    }
+                    return data;
+                });
+            }
+
+            if (!cloudSuccess) {
+                // Local fallback deletion
+                if (type === 'diary') {
+                    localDiaryFallback = localDiaryFallback.filter(item => (item.id || item.timestamp).toString() !== id.toString());
+                    localStorage.setItem('zh_localDiary', JSON.stringify(localDiaryFallback));
+                    if (window.renderCloudDiary) window.renderCloudDiary(localDiaryFallback);
+                } else if (type === 'journal') {
+                    localJournalFallback = localJournalFallback.filter(item => (item.id || item.timestamp).toString() !== id.toString());
+                    localStorage.setItem('zh_localJournal', JSON.stringify(localJournalFallback));
+                    if (window.renderCloudJournal) window.renderCloudJournal(localJournalFallback);
+                }
+            } else {
+                // Cloud re-render
+                if (type === 'diary' && window.renderCloudDiary) window.renderCloudDiary(window.globalData.diary);
+                if (type === 'journal' && window.renderCloudJournal) window.renderCloudJournal(window.globalData.journal);
+            }
+
+            showToast("Entry deleted! 🗑️", "border-red-400 text-red-500", "✨");
+            closeDeleteModal();
+        }
+
+        // --- Utility Functions ---
         document.getElementById('memoryText').addEventListener('input', updateLineCount);
 
         function updateLineCount() {
