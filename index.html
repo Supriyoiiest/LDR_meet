@@ -459,13 +459,23 @@
             <h3 class="font-display text-3xl sm:text-4xl text-red-500 mb-1 sm:mb-2">Emergency!</h3>
             <p class="text-base sm:text-lg text-gray-600 font-bold mb-4 sm:mb-6">Who needs a rescue right now?</p>
 
-            <div class="flex flex-col gap-3 sm:gap-4">
-                <button onclick="callPartner('posto')" class="btn-press w-full py-3 sm:py-4 bg-zoo-orange text-white font-display text-xl sm:text-2xl rounded-xl border-4 border-orange-300 shadow-kawaii-orange transition-all">
-                    I'm Jhingy 🦊<br><span class="text-xs sm:text-sm font-sans block mt-1">(Call Posto)</span>
-                </button>
-                <button onclick="callPartner('jhingy')" class="btn-press w-full py-3 sm:py-4 bg-zoo-pink text-white font-display text-xl sm:text-2xl rounded-xl border-4 border-pink-300 shadow-kawaii-pink transition-all">
-                    I'm Posto 🐰<br><span class="text-xs sm:text-sm font-sans block mt-1">(Call Jhingy)</span>
-                </button>
+            <div class="flex flex-col gap-4">
+                <!-- Jhingy's Row -->
+                <div class="bg-orange-50 p-3 sm:p-4 rounded-2xl border-2 border-orange-200">
+                    <p class="font-display text-xl text-zoo-orange mb-2">I'm Jhingy 🦊</p>
+                    <div class="flex gap-2">
+                        <button onclick="contactPartner('posto', 'call')" class="flex-1 py-2 sm:py-3 bg-zoo-orange text-white font-bold rounded-xl border-b-4 border-orange-500 active:border-b-0 active:translate-y-1 transition-all"><i class="fa-solid fa-phone mr-1"></i> Call</button>
+                        <button onclick="contactPartner('posto', 'sms')" class="flex-1 py-2 sm:py-3 bg-orange-400 text-white font-bold rounded-xl border-b-4 border-orange-600 active:border-b-0 active:translate-y-1 transition-all"><i class="fa-solid fa-message mr-1"></i> Text</button>
+                    </div>
+                </div>
+                <!-- Posto's Row -->
+                <div class="bg-pink-50 p-3 sm:p-4 rounded-2xl border-2 border-pink-200">
+                    <p class="font-display text-xl text-zoo-pink mb-2">I'm Posto 🐰</p>
+                    <div class="flex gap-2">
+                        <button onclick="contactPartner('jhingy', 'call')" class="flex-1 py-2 sm:py-3 bg-zoo-pink text-white font-bold rounded-xl border-b-4 border-pink-500 active:border-b-0 active:translate-y-1 transition-all"><i class="fa-solid fa-phone mr-1"></i> Call</button>
+                        <button onclick="contactPartner('jhingy', 'sms')" class="flex-1 py-2 sm:py-3 bg-pink-400 text-white font-bold rounded-xl border-b-4 border-pink-600 active:border-b-0 active:translate-y-1 transition-all"><i class="fa-solid fa-message mr-1"></i> Text</button>
+                    </div>
+                </div>
             </div>
             <button onclick="closeSosModal()" class="mt-4 sm:mt-6 text-sm sm:text-base text-gray-400 font-bold hover:text-gray-600 underline">Cancel</button>
         </div>
@@ -735,18 +745,35 @@
             setTimeout(() => { modal.classList.add('hidden'); }, 300);
         }
 
-        function callPartner(target) {
+        function contactPartner(target, method) {
             let phone = target === 'posto' ? APP_CONFIG.postoPhone : APP_CONFIG.jhingyPhone;
             let targetName = target === 'posto' ? 'Posto 🐰' : 'Jhingy 🦊';
+            let senderName = target === 'posto' ? 'Jhingy 🦊' : 'Posto 🐰';
 
             if (!phone) {
                 showToast(`Set ${targetName}'s phone in Settings first! ⚙️`, "border-red-500 text-red-500", "⚠️");
                 return;
             }
-            showToast(`Calling ${targetName}... 📞`, "border-red-500 text-red-500", "🚨");
-            setTimeout(() => {
-                window.location.href = `tel:${phone}`;
-            }, 800);
+
+            if (method === 'call') {
+                showToast(`Calling ${targetName}... 📞`, "border-red-500 text-red-500", "🚨");
+                setTimeout(() => {
+                    window.location.href = `tel:${phone}`;
+                }, 800);
+            } else if (method === 'sms') {
+                showToast(`Texting ${targetName}... 💬`, "border-red-500 text-red-500", "🚨");
+                
+                const cuteMsg = `🚨 ZPD Emergency from ${senderName}! 🚨\n\nPlease pause the grumps! 🥺 Can we stop quarreling and just cuddle? I am having a tough time and really need my favorite person right now to help me cope... I love you! 💕`;
+                
+                // OS detection for proper SMS URI formatting (RFC 5724 vs legacy iOS)
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+                const separator = isIOS ? '&' : '?';
+                
+                setTimeout(() => {
+                    window.location.href = `sms:${phone}${separator}body=${encodeURIComponent(cuteMsg)}`;
+                }, 800);
+            }
+            
             closeSosModal();
         }
 
