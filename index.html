@@ -245,7 +245,7 @@
                 </div>
                 
                 <div class="polaroid mx-auto w-full max-w-[200px] sm:max-w-[240px] mb-6 sm:mb-8 relative z-10">
-                    <img id="memoryImage" src="https://placehold.co/400x400/ff8a65/ffffff?text=Waiting+for+Drive+📸" alt="Memory" class="w-full aspect-square object-cover rounded-md border-2 border-gray-200">
+                    <img id="memoryImage" src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Crect width='400' height='400' fill='%23ffe0b2'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='22' font-weight='bold' fill='%23ff8a65' text-anchor='middle' dominant-baseline='middle'%3EWaiting for Magic %E2%9C%A8%3C/text%3E%3C/svg%3E" onerror="this.onerror=null; this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'400\' viewBox=\'0 0 400 400\'%3E%3Crect width=\'400\' height=\'400\' fill=\'%23ffccbc\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' font-family=\'sans-serif\' font-size=\'22\' font-weight=\'bold\' fill=\'%23ffffff\' text-anchor=\'middle\' dominant-baseline=\'middle\'%3ESafe %F0%9F%92%96%3C/text%3E%3C/svg%3E';" alt="Memory" class="w-full aspect-square object-cover rounded-md border-2 border-gray-200">
                     <p class="text-center mt-3 sm:mt-4 text-xs sm:text-sm text-zoo-orange font-bold tracking-wider font-sans" id="imageToken">#TOKEN</p>
                 </div>
 
@@ -821,9 +821,7 @@
         setInterval(updateTimer, 1000);
 
         let fetchedDriveImages = [
-            "https://placehold.co/400x400/ff8a65/ffffff?text=Add+Keys+in+Settings+⚙️", 
-            "https://placehold.co/400x400/81c784/ffffff?text=Waiting+for+Memories+✨",
-            "https://placehold.co/400x400/4fc3f7/ffffff?text=Waiting+for+Memories+💖"
+            "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Crect width='400' height='400' fill='%23ffe0b2'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='22' font-weight='bold' fill='%23ff8a65' text-anchor='middle' dominant-baseline='middle'%3EAdd Keys in Settings %E2%9A%99%EF%B8%8F%3C/text%3E%3C/svg%3E"
         ];
         let currentToken = generateToken();
         let localDiaryFallback = JSON.parse(localStorage.getItem('zh_localDiary')) || []; 
@@ -844,6 +842,7 @@
                 if(data.error) throw new Error(data.error.message);
                 if(!data.files || data.files.length === 0) throw new Error("No pictures found!");
 
+                // Bypass "Content Unavailable" blocks by fetching the thumbnailLink and upgrading it to high resolution (s800)
                 fetchedDriveImages = data.files
                     .filter(file => file.thumbnailLink)
                     .map(file => file.thumbnailLink.replace(/=s\d+$/, '') + '=s800');
@@ -968,7 +967,7 @@
 
                 return `
                 <div class="bg-orange-50 rounded-xl sm:rounded-2xl p-3 sm:p-4 border-2 sm:border-4 border-dashed border-zoo-orange transform rotate-1 hover:rotate-0 transition-transform">
-                    <img src="${mem.image}" class="w-full h-32 sm:h-40 object-cover rounded-lg sm:rounded-xl border-2 border-zoo-orange mb-2 sm:mb-3" alt="Memory" onerror="this.src='https://placehold.co/400x400/ff8a65/ffffff?text=Missing+Memory'">
+                    <img src="${mem.image}" class="w-full h-32 sm:h-40 object-cover rounded-lg sm:rounded-xl border-2 border-zoo-orange mb-2 sm:mb-3" alt="Memory" onerror="this.onerror=null; this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'400\\' height=\\'400\\' viewBox=\\'0 0 400 400\\'%3E%3Crect width=\\'400\\' height=\\'400\\' fill=\\'%23ffccbc\\'/%3E%3Ctext x=\\'50%25\\' y=\\'50%25\\' font-family=\\'sans-serif\\' font-size=\\'22\\' font-weight=\\'bold\\' fill=\\'%23ffffff\\' text-anchor=\\'middle\\' dominant-baseline=\\'middle\\'%3ESafe %F0%9F%92%96%3C/text%3E%3C/svg%3E';">
                     <div class="flex justify-between items-center mb-1 sm:mb-2">
                         <span class="text-[10px] sm:text-xs text-gray-500 font-sans font-bold">ID: ${mem.id} | ${mem.date}</span>
                         <span class="text-[10px] sm:text-xs font-display px-2 py-1 rounded-full ${authorClass}">${authorDisplay}</span>
