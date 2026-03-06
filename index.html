@@ -381,62 +381,61 @@
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Initialize connection
+        // Check if we have a valid cloud database config
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-
-        let currentUser = null;
-
-        // Secure Authentication
-        const initAuth = async () => {
-            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                await signInWithCustomToken(auth, __initial_auth_token);
-            } else {
-                await signInAnonymously(auth);
-            }
-        };
-        initAuth();
-
-        // Listen for Real-Time Diary Updates
-        onAuthStateChanged(auth, (user) => {
-            currentUser = user;
-            if (user) {
-                // We use a shared 'public' path so both Jhingy and Posto see the exact same diary entries!
-                const diaryRef = collection(db, 'artifacts', appId, 'public', 'data', 'diary_entries');
-                
-                onSnapshot(diaryRef, (snapshot) => {
-                    const entries = [];
-                    snapshot.forEach(doc => {
-                        entries.push({ docId: doc.id, ...doc.data() });
-                    });
-                    
-                    // Sort newest first
-                    entries.sort((a, b) => b.timestamp - a.timestamp);
-                    
-                    if (window.renderCloudDiary) {
-                        window.renderCloudDiary(entries);
-                    }
-                }, (error) => {
-                    console.error("Diary sync error:", error);
-                });
-            }
-        });
-
-        // Expose save function to the rest of the app
-        window.saveToCloudDiary = async (memoryData) => {
-            if (!currentUser) return false;
+        
+        // If no config is found (like on GitHub Pages), disable cloud sync gracefully so the app doesn't break
+        if (Object.keys(firebaseConfig).length > 0) {
             try {
-                const diaryRef = collection(db, 'artifacts', appId, 'public', 'data', 'diary_entries');
-                await addDoc(diaryRef, { ...memoryData, timestamp: Date.now() });
-                return true;
-            } catch (e) {
-                console.error("Cloud save failed", e);
-                return false;
+                const app = initializeApp(firebaseConfig);
+                const auth = getAuth(app);
+                const db = getFirestore(app);
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+                let currentUser = null;
+
+                const initAuth = async () => {
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                };
+                initAuth();
+
+                onAuthStateChanged(auth, (user) => {
+                    currentUser = user;
+                    if (user) {
+                        const diaryRef = collection(db, 'artifacts', appId, 'public', 'data', 'diary_entries');
+                        
+                        onSnapshot(diaryRef, (snapshot) => {
+                            const entries = [];
+                            snapshot.forEach(doc => {
+                                entries.push({ docId: doc.id, ...doc.data() });
+                            });
+                            entries.sort((a, b) => b.timestamp - a.timestamp);
+                            if (window.renderCloudDiary) window.renderCloudDiary(entries);
+                        }, (error) => console.error("Diary sync error:", error));
+                    }
+                });
+
+                window.saveToCloudDiary = async (memoryData) => {
+                    if (!currentUser) return false;
+                    try {
+                        const diaryRef = collection(db, 'artifacts', appId, 'public', 'data', 'diary_entries');
+                        await addDoc(diaryRef, { ...memoryData, timestamp: Date.now() });
+                        return true;
+                    } catch (e) {
+                        console.error("Cloud save failed", e);
+                        return false;
+                    }
+                };
+            } catch (err) {
+                console.warn("Firebase initialization skipped:", err);
             }
-        };
+        } else {
+            console.warn("No Cloud Database config found. Falling back to local session diary.");
+        }
     </script>
 
     <script>
@@ -479,9 +478,16 @@
 
         // --- BACKEND CONFIGURATION ---
         // 👇 ADD YOUR KEYS HERE:
+        // ⚠️ SECURITY WARNING: Exposing a GitHub Personal Access Token in frontend code 
+        // means anyone inspecting the site can modify your repo. Use a token with 
+        // strictly limited scopes (only "repo" access) and keep your repo private if possible.
         const APP_CONFIG = {
-            driveFolderId: "1_6SrpNjoaWmizX39HTrTpkpE1VHZtYt6", // <-- Replace with your Folder ID 
-            apiKey: "AIzaSyDuBNNJ-LcBK-8HTjtWfWjxryimFvZL3GI"         // <-- Replace with your Google API Key
+            driveFolderId: "YOUR_FOLDER_ID_HERE", // <-- Replace with your Folder ID 
+            apiKey: "YOUR_API_KEY_HERE",          // <-- Replace with your Google API Key
+            githubToken: "YOUR_GITHUB_PAT_HERE",  // <-- Replace with your GitHub Fine-Grained Personal Access Token
+            githubOwner: "YOUR_GITHUB_USERNAME",  // <-- Replace with your GitHub Username (e.g., "octocat")
+            githubRepo: "YOUR_GITHUB_REPO",       // <-- Replace with your GitHub Repository name (e.g., "zootopia-love-hub")
+            githubBranch: "main"                  // <-- Replace with your branch name (usually "main")
         };
 
         // --- Drive API & Memory Logic ---
@@ -491,6 +497,7 @@
             "https://placehold.co/400x400/4fc3f7/ffffff?text=Waiting+for+Memories+💖"
         ];
         let currentToken = "";
+        let localDiaryFallback = []; // Used when Cloud Database is unavailable
 
         async function connectDrive() {
             // Silently abort if keys aren't added yet
@@ -550,6 +557,41 @@
             updateLineCount();
         }
 
+        // --- GitHub API Logic ---
+        async function saveToGitHub(memoryData, mdContent) {
+            if (!APP_CONFIG.githubToken || APP_CONFIG.githubToken === "YOUR_GITHUB_PAT_HERE") {
+                return false;
+            }
+
+            const fileName = `memories/Memory_${memoryData.id}.md`;
+            const url = `https://api.github.com/repos/${APP_CONFIG.githubOwner}/${APP_CONFIG.githubRepo}/contents/${fileName}`;
+            
+            // Base64 encode the markdown content (handles unicode emojis properly)
+            const encodedContent = btoa(unescape(encodeURIComponent(mdContent)));
+
+            try {
+                const response = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${APP_CONFIG.githubToken}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/vnd.github.v3+json'
+                    },
+                    body: JSON.stringify({
+                        message: `Add memory ${memoryData.id} by ${memoryData.author}`,
+                        content: encodedContent,
+                        branch: APP_CONFIG.githubBranch
+                    })
+                });
+
+                if (!response.ok) throw new Error("GitHub API error");
+                return true;
+            } catch (error) {
+                console.error("GitHub Save Error:", error);
+                return false;
+            }
+        }
+
         async function saveMemory() {
             const text = document.getElementById('memoryText').value.trim();
             const lines = text.split('\n').filter(line => line.trim() !== '');
@@ -566,41 +608,54 @@
                 date: new Date().toLocaleDateString(),
                 text: text,
                 image: currentImgSrc,
-                author: author
+                author: author,
+                timestamp: Date.now()
             };
 
-            // --- 1. Save to Real-Time Cloud Diary ---
+            // Generate beautifully formatted Markdown content
+            const mdContent = `# 🌸 JHINGY & POSTO'S MEMORY BANK 🌸\n\n` +
+                              `**Magic ID:** ${currentToken}  \n` +
+                              `**Date:** ${new Date().toLocaleDateString()}  \n` +
+                              `**Saved By:** ${author}  \n\n` +
+                              `## Our Story\n\n${text}\n\n` +
+                              `---\n\n` +
+                              `![Memory View](${currentImgSrc})\n\n` +
+                              `*Love you forever! 🦊❤️🐰*`;
+
+            // --- 1. Attempt Real-Time Firebase Save OR Fallback safely ---
+            let cloudSuccess = false;
             if (window.saveToCloudDiary) {
-                const success = await window.saveToCloudDiary(memoryData);
-                if (!success) {
-                    showToast("Oops! Cloud connection issue 🥺", "border-rose-400 text-rose-500", "⚠️");
-                    return;
-                }
+                cloudSuccess = await window.saveToCloudDiary(memoryData);
+            }
+            
+            if (!cloudSuccess) {
+                localDiaryFallback.unshift(memoryData);
+                if (window.renderCloudDiary) window.renderCloudDiary(localDiaryFallback);
             }
 
-            // --- 2. Download Local Text File Bonus ---
-            const fileContent = `🌸 JHINGY & POSTO'S MEMORY BANK 🌸\n` +
-                                `===================================\n\n` +
-                                `Magic ID: ${currentToken}\n` +
-                                `Date: ${new Date().toLocaleDateString()}\n` +
-                                `Saved By: ${author}\n\n` +
-                                `Our Story:\n${text}\n\n` +
-                                `===================================\n` +
-                                `Love you forever! 🦊❤️🐰`;
+            // --- 2. Attempt GitHub Save ---
+            const githubSuccess = await saveToGitHub(memoryData, mdContent);
 
-            const blob = new Blob([fileContent], { type: 'text/plain' });
+            // --- 3. Download Local Markdown File Bonus ---
+            const blob = new Blob([mdContent], { type: 'text/markdown' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `Cute_Memory_${currentToken}.txt`;
+            a.download = `Cute_Memory_${currentToken}.md`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
 
-            showToast("Saved to our Cloud Diary! ☁️✨", "border-zoo-blue text-zoo-blue", "💖");
+            if (githubSuccess) {
+                showToast("Saved to GitHub & Diary! 🐙✨", "border-gray-800 text-gray-800", "🚀");
+            } else if (cloudSuccess) {
+                showToast("Saved to our Cloud Diary! ☁️✨", "border-zoo-blue text-zoo-blue", "💖");
+            } else {
+                showToast("Saved as Markdown file! 📝✨", "border-zoo-green text-zoo-green", "💖");
+            }
             
-            // Bring user to diary page to see it instantly sync
+            // Bring user to diary page to see it
             navTo('page-diary');
             setTimeout(() => loadRandomImage(), 1000);
         }
