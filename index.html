@@ -9,7 +9,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://meet.jit.si/external_api.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -218,7 +217,7 @@
             </div>
         </section>
 
-        <!-- PAGE 2: MEMORY MAKER (GOOGLE DRIVE API) -->
+        <!-- PAGE 2: MEMORY MAKER -->
         <section id="page-memories" class="page-section max-w-md mx-auto w-full">
             <div class="bg-white rounded-[1.5rem] sm:rounded-[2rem] p-4 sm:p-6 border-4 border-zoo-orange shadow-kawaii relative">
                 <div class="absolute -top-4 sm:-top-6 -right-4 sm:-right-6 text-4xl sm:text-5xl animate-wiggle">✨</div>
@@ -401,10 +400,10 @@
     <div id="settingsModal" class="fixed inset-0 bg-blue-900/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-3 sm:p-4 transition-opacity">
         <div class="bg-white p-5 sm:p-6 md:p-8 rounded-[1.5rem] sm:rounded-[2rem] border-4 border-gray-300 max-w-md w-full shadow-kawaii transform scale-95 transition-transform duration-300 max-h-[90vh] overflow-y-auto" id="settingsModalContent">
             <h3 class="font-display text-2xl sm:text-3xl text-gray-700 mb-1 sm:mb-2"><i class="fa-solid fa-key text-zoo-orange mr-2"></i>Global Setup</h3>
-            <p class="text-xs sm:text-sm font-bold text-gray-500 mb-2 border-b-2 border-dashed border-gray-200 pb-3 sm:pb-4">Connect your Google Drive for photos, your Google Meet link, and paste your JSONBin keys to keep it all synced globally forever! 🌍</p>
+            <p class="text-xs sm:text-sm font-bold text-gray-500 mb-2 border-b-2 border-dashed border-gray-200 pb-3 sm:pb-4">Connect your Google Drive for photos, your Google Meet link, and paste your Apps Script URL to keep it all synced globally forever! 🌍</p>
             
             <div class="mt-2 mb-3 sm:mb-4 p-2 sm:p-3 bg-purple-50 border-2 border-dashed border-zoo-purple rounded-lg sm:rounded-xl text-[10px] sm:text-xs text-gray-600 font-bold">
-                <i class="fa-solid fa-circle-info text-zoo-purple"></i> <b>Using JSONBin.io:</b> Create a free account at JSONBin.io, create an empty Bin, and paste the Bin ID and your Master Key below. No 30-day limits!
+                <i class="fa-solid fa-circle-info text-zoo-purple"></i> <b>100% Lifetime Free:</b> Paste your deployed Google Apps Script Web App URL below to sync your database forever!
             </div>
             
             <div class="space-y-3 sm:space-y-4">
@@ -431,12 +430,8 @@
                     <input type="password" id="setDriveKey" placeholder="AIzaSy..." class="w-full p-2 sm:p-3 bg-gray-50 border-2 border-gray-300 rounded-lg sm:rounded-xl outline-none focus:border-zoo-blue text-sm">
                 </div>
                 <div class="pt-2 border-t-2 border-dashed border-gray-200">
-                    <label class="block text-xs sm:text-sm font-bold text-gray-600 ml-1 sm:ml-2 mb-1">JSONBin Master Key (Global Sync)</label>
-                    <input type="password" id="setJsonbinKey" placeholder="$2a$10$..." class="w-full p-2 sm:p-3 bg-gray-50 border-2 border-gray-300 rounded-lg sm:rounded-xl outline-none focus:border-zoo-purple text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs sm:text-sm font-bold text-gray-600 ml-1 sm:ml-2 mb-1">JSONBin Bin ID</label>
-                    <input type="text" id="setJsonbinId" placeholder="65a1b2c3..." class="w-full p-2 sm:p-3 bg-gray-50 border-2 border-gray-300 rounded-lg sm:rounded-xl outline-none focus:border-zoo-purple text-sm">
+                    <label class="block text-xs sm:text-sm font-bold text-gray-600 ml-1 sm:ml-2 mb-1">Google Apps Script URL (Database Backend)</label>
+                    <input type="password" id="setGasUrl" placeholder="https://script.google.com/macros/s/..." class="w-full p-2 sm:p-3 bg-gray-50 border-2 border-gray-300 rounded-lg sm:rounded-xl outline-none focus:border-zoo-purple text-sm">
                 </div>
             </div>
 
@@ -512,14 +507,13 @@
         let APP_CONFIG = {
             driveFolderId: localStorage.getItem('zh_driveFolderId') || "",
             apiKey: localStorage.getItem('zh_apiKey') || "",
-            jsonbinKey: localStorage.getItem('zh_jsonbinKey') || "",
-            jsonbinId: localStorage.getItem('zh_jsonbinId') || "",
+            gasUrl: localStorage.getItem('zh_gasUrl') || "",
             meetLink: localStorage.getItem('zh_meetLink') || "",
             jhingyPhone: localStorage.getItem('zh_jhingyPhone') || "",
             postoPhone: localStorage.getItem('zh_postoPhone') || ""
         };
 
-        // --- GLOBAL JSONBIN STORAGE ARCHITECTURE ---
+        // --- GLOBAL APPS SCRIPT STORAGE ARCHITECTURE ---
         window.globalData = {
             diary: [],
             journal: [],
@@ -530,13 +524,11 @@
         window.timeOffset = 0;
 
         async function fetchGlobalData() {
-            if (!APP_CONFIG.jsonbinKey || !APP_CONFIG.jsonbinId) return;
+            if (!APP_CONFIG.gasUrl) return;
             try {
-                const res = await fetch(`https://api.jsonbin.io/v3/b/${APP_CONFIG.jsonbinId}/latest`, {
-                    headers: { 'X-Master-Key': APP_CONFIG.jsonbinKey, 'X-Bin-Meta': 'false' }
-                });
+                // To avoid CORS issues with Apps Script redirects, we fetch directly
+                const res = await fetch(APP_CONFIG.gasUrl);
                 
-                // Calculate Time Offset using the server's HTTP Date header
                 const serverDateStr = res.headers.get('Date');
                 if (serverDateStr) {
                     const serverTime = new Date(serverDateStr).getTime();
@@ -555,41 +547,38 @@
                     if (window.handleCloudTimerUpdate) window.handleCloudTimerUpdate(window.globalData.lastMet);
                 }
             } catch(e) {
-                console.error("Failed to fetch JSONBin data", e);
+                console.error("Failed to fetch Apps Script data", e);
             }
         }
 
-        // NEW: Concurrency-safe cloud updating function!
+        // Concurrency-safe cloud updating function via Apps Script POST
         async function updateGlobalData(updaterFn) {
-            if (!APP_CONFIG.jsonbinKey || !APP_CONFIG.jsonbinId) return false;
+            if (!APP_CONFIG.gasUrl) return false;
             try {
-                // 1. Always fetch the absolute latest first so we don't overwrite partner's recent saves
-                const getRes = await fetch(`https://api.jsonbin.io/v3/b/${APP_CONFIG.jsonbinId}/latest`, {
-                    headers: { 'X-Master-Key': APP_CONFIG.jsonbinKey, 'X-Bin-Meta': 'false' }
-                });
+                // 1. Fetch latest state first
+                const getRes = await fetch(APP_CONFIG.gasUrl);
                 let currentRecord = await getRes.json();
-                if (!currentRecord.diary) currentRecord = { diary: [], journal: [], lastMet: Date.now() };
+                if (!currentRecord || !currentRecord.diary) currentRecord = { diary: [], journal: [], lastMet: Date.now() };
 
-                // 2. Apply modifications to the fresh data
+                // 2. Apply modification
                 const updatedRecord = updaterFn(currentRecord);
 
-                // 3. Save merged data back to the cloud
-                const putRes = await fetch(`https://api.jsonbin.io/v3/b/${APP_CONFIG.jsonbinId}`, {
-                    method: 'PUT',
+                // 3. Save merged data using text/plain to bypass CORS preflight
+                const putRes = await fetch(APP_CONFIG.gasUrl, {
+                    method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': APP_CONFIG.jsonbinKey
+                        'Content-Type': 'text/plain;charset=utf-8' 
                     },
                     body: JSON.stringify(updatedRecord)
                 });
                 
                 if (putRes.ok) {
-                    window.globalData = updatedRecord; // Sync local view instantly
+                    window.globalData = updatedRecord; 
                     return true;
                 }
                 return false;
             } catch(e) {
-                console.error("Failed to sync JSONBin data", e);
+                console.error("Failed to sync Apps Script data", e);
                 return false;
             }
         }
@@ -603,8 +592,7 @@
             document.getElementById('setMeetLink').value = APP_CONFIG.meetLink;
             document.getElementById('setDriveFolder').value = APP_CONFIG.driveFolderId;
             document.getElementById('setDriveKey').value = APP_CONFIG.apiKey;
-            document.getElementById('setJsonbinKey').value = APP_CONFIG.jsonbinKey;
-            document.getElementById('setJsonbinId').value = APP_CONFIG.jsonbinId;
+            document.getElementById('setGasUrl').value = APP_CONFIG.gasUrl;
             
             const modal = document.getElementById('settingsModal');
             const content = document.getElementById('settingsModalContent');
@@ -630,8 +618,7 @@
                 meetLink: document.getElementById('setMeetLink').value.trim(),
                 driveFolderId: document.getElementById('setDriveFolder').value.trim(),
                 apiKey: document.getElementById('setDriveKey').value.trim(),
-                jsonbinKey: document.getElementById('setJsonbinKey').value.trim(),
-                jsonbinId: document.getElementById('setJsonbinId').value.trim()
+                gasUrl: document.getElementById('setGasUrl').value.trim()
             };
 
             localStorage.setItem('zh_jhingyPhone', keys.jhingyPhone);
@@ -639,8 +626,7 @@
             localStorage.setItem('zh_meetLink', keys.meetLink);
             localStorage.setItem('zh_driveFolderId', keys.driveFolderId);
             localStorage.setItem('zh_apiKey', keys.apiKey);
-            localStorage.setItem('zh_jsonbinKey', keys.jsonbinKey);
-            localStorage.setItem('zh_jsonbinId', keys.jsonbinId);
+            localStorage.setItem('zh_gasUrl', keys.gasUrl);
             
             APP_CONFIG = { ...APP_CONFIG, ...keys };
             
@@ -676,10 +662,9 @@
             const m = encodeURIComponent(APP_CONFIG.meetLink);
             const pj = encodeURIComponent(APP_CONFIG.jhingyPhone);
             const pp = encodeURIComponent(APP_CONFIG.postoPhone);
-            const jbk = encodeURIComponent(APP_CONFIG.jsonbinKey); 
-            const jbi = encodeURIComponent(APP_CONFIG.jsonbinId); 
+            const gu = encodeURIComponent(APP_CONFIG.gasUrl); 
             
-            const magicUrl = `${window.location.origin}${window.location.pathname}?d=${d}&k=${k}&m=${m}&pj=${pj}&pp=${pp}&jbk=${jbk}&jbi=${jbi}`;
+            const magicUrl = `${window.location.origin}${window.location.pathname}?d=${d}&k=${k}&m=${m}&pj=${pj}&pp=${pp}&gu=${gu}`;
             
             navigator.clipboard.writeText(magicUrl).then(() => {
                 showToast("Magic Link Copied! Send it to her! 🪄", "border-zoo-pink text-zoo-pink", "✨");
@@ -696,19 +681,17 @@
 
         function checkMagicLinkOnLoad() {
             const params = new URLSearchParams(window.location.search);
-            if (params.has('d') || params.has('k') || params.has('jbk') || params.has('jbi') || params.has('m') || params.has('pj') || params.has('pp')) {
+            if (params.has('d') || params.has('k') || params.has('gu') || params.has('m') || params.has('pj') || params.has('pp')) {
                 if (params.has('d')) localStorage.setItem('zh_driveFolderId', decodeURIComponent(params.get('d')));
                 if (params.has('k')) localStorage.setItem('zh_apiKey', decodeURIComponent(params.get('k')));
                 if (params.has('m')) localStorage.setItem('zh_meetLink', decodeURIComponent(params.get('m')));
                 if (params.has('pj')) localStorage.setItem('zh_jhingyPhone', decodeURIComponent(params.get('pj')));
                 if (params.has('pp')) localStorage.setItem('zh_postoPhone', decodeURIComponent(params.get('pp')));
-                if (params.has('jbk')) localStorage.setItem('zh_jsonbinKey', decodeURIComponent(params.get('jbk')));
-                if (params.has('jbi')) localStorage.setItem('zh_jsonbinId', decodeURIComponent(params.get('jbi')));
+                if (params.has('gu')) localStorage.setItem('zh_gasUrl', decodeURIComponent(params.get('gu')));
                 
                 APP_CONFIG.driveFolderId = localStorage.getItem('zh_driveFolderId');
                 APP_CONFIG.apiKey = localStorage.getItem('zh_apiKey');
-                APP_CONFIG.jsonbinKey = localStorage.getItem('zh_jsonbinKey');
-                APP_CONFIG.jsonbinId = localStorage.getItem('zh_jsonbinId');
+                APP_CONFIG.gasUrl = localStorage.getItem('zh_gasUrl');
                 APP_CONFIG.meetLink = localStorage.getItem('zh_meetLink');
                 APP_CONFIG.jhingyPhone = localStorage.getItem('zh_jhingyPhone');
                 APP_CONFIG.postoPhone = localStorage.getItem('zh_postoPhone');
@@ -757,7 +740,6 @@
         let lastMetTime = parseInt(localStorage.getItem('zh_lastMetTime')) || Date.now();
         
         function updateTimer() {
-            // Use the synced server time offset so both devices display the exact same timer
             const now = Date.now() + window.timeOffset;
             const diff = Math.max(0, now - lastMetTime);
             
@@ -791,15 +773,13 @@
         }
 
         async function confirmResetTimer() {
-            // Apply server offset so the exact timestamp aligns for both devices
             const newLastMetTime = Date.now() + window.timeOffset;
             lastMetTime = newLastMetTime;
             localStorage.setItem('zh_lastMetTime', lastMetTime);
             updateTimer();
             showToast("Timer Reset! Yay! 🎉", "border-zoo-pink text-zoo-pink", "🕒");
             
-            if (APP_CONFIG.jsonbinKey && APP_CONFIG.jsonbinId) {
-                // Safely update global timer without destroying new diary entries
+            if (APP_CONFIG.gasUrl) {
                 await updateGlobalData((data) => {
                     data.lastMet = newLastMetTime;
                     return data;
@@ -809,7 +789,6 @@
         }
 
         window.handleCloudTimerUpdate = function(cloudTime) {
-            // If the server time has changed by more than 5 seconds, sync it down immediately!
             if (cloudTime && Math.abs(cloudTime - lastMetTime) > 5000) {
                 lastMetTime = cloudTime;
                 localStorage.setItem('zh_lastMetTime', lastMetTime);
@@ -842,7 +821,6 @@
                 if(data.error) throw new Error(data.error.message);
                 if(!data.files || data.files.length === 0) throw new Error("No pictures found!");
 
-                // Bypass "Content Unavailable" blocks by fetching the thumbnailLink and upgrading it to high resolution (s800)
                 fetchedDriveImages = data.files
                     .filter(file => file.thumbnailLink)
                     .map(file => file.thumbnailLink.replace(/=s\d+$/, '') + '=s800');
@@ -901,7 +879,7 @@
             };
 
             let cloudSuccess = false;
-            if (APP_CONFIG.jsonbinKey && APP_CONFIG.jsonbinId) {
+            if (APP_CONFIG.gasUrl) {
                 cloudSuccess = await updateGlobalData((data) => {
                     if(!data.diary) data.diary = [];
                     data.diary.unshift(memoryData);
@@ -1001,7 +979,7 @@
             };
 
             let cloudSuccess = false;
-            if (APP_CONFIG.jsonbinKey && APP_CONFIG.jsonbinId) {
+            if (APP_CONFIG.gasUrl) {
                 cloudSuccess = await updateGlobalData((data) => {
                     if(!data.journal) data.journal = [];
                     data.journal.unshift(journalData);
@@ -1156,7 +1134,7 @@
             connectDrive(); 
             updateTimer();
             
-            if (APP_CONFIG.jsonbinKey && APP_CONFIG.jsonbinId) {
+            if (APP_CONFIG.gasUrl) {
                 fetchGlobalData();
             } else {
                 if (window.renderCloudDiary) window.renderCloudDiary(localDiaryFallback);
