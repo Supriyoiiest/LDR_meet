@@ -6,11 +6,9 @@
     <title>Jhingy & Posto's Zootopia</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <!-- Super cute bubbly Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://meet.jit.si/external_api.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -20,7 +18,8 @@
                         'zoo-orange-hover': '#ff7043',
                         'zoo-green': '#81c784',  
                         'zoo-blue': '#4fc3f7',   
-                        'zoo-pink': '#f06292',   
+                        'zoo-pink': '#f06292',
+                        'zoo-purple': '#c084fc',
                         'zoo-bg': '#fff8e1',     
                     },
                     fontFamily: {
@@ -44,12 +43,12 @@
                         }
                     },
                     boxShadow: {
-                        /* Kawaii "Sticker" hard shadows instead of professional soft shadows */
                         'kawaii': '6px 6px 0px 0px rgba(0,0,0,0.1)',
                         'kawaii-orange': '4px 4px 0px 0px #ff8a65',
                         'kawaii-blue': '4px 4px 0px 0px #4fc3f7',
                         'kawaii-pink': '4px 4px 0px 0px #f06292',
                         'kawaii-green': '4px 4px 0px 0px #81c784',
+                        'kawaii-purple': '4px 4px 0px 0px #c084fc',
                     }
                 }
             }
@@ -57,7 +56,6 @@
     </script>
     <style>
         body {
-            /* Dynamic Animated Gradient Background */
             background: linear-gradient(-45deg, #fff8e1, #ffe0b2, #f8bbd0, #e1f5fe);
             background-size: 400% 400%;
             animation: gradientBG 20s ease infinite;
@@ -82,7 +80,6 @@
             to { transform: translateY(-120vh) rotate(360deg); }
         }
         
-        /* Cute tape for Polaroid */
         .polaroid {
             position: relative;
             background: white;
@@ -94,7 +91,6 @@
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* Washi tape */
         .polaroid::before {
             content: '';
             position: absolute;
@@ -103,7 +99,7 @@
             transform: translateX(-50%) rotate(4deg);
             width: 80px;
             height: 30px;
-            background-color: rgba(129, 199, 132, 0.7); /* Cute green tape */
+            background-color: rgba(129, 199, 132, 0.7);
             border: 2px dashed white;
             border-radius: 2px;
             z-index: 10;
@@ -118,19 +114,9 @@
             clip-path: path('M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z');
         }
         
-        textarea::-webkit-scrollbar {
-            width: 14px;
-        }
-        textarea::-webkit-scrollbar-track {
-            background: #fff8e1;
-            border-radius: 12px;
-            border: 2px solid #ff8a65;
-        }
-        textarea::-webkit-scrollbar-thumb {
-            background: #ff8a65;
-            border-radius: 12px;
-            border: 3px solid #fff8e1;
-        }
+        textarea::-webkit-scrollbar { width: 14px; }
+        textarea::-webkit-scrollbar-track { background: #fff8e1; border-radius: 12px; border: 2px solid #ff8a65; }
+        textarea::-webkit-scrollbar-thumb { background: #ff8a65; border-radius: 12px; border: 3px solid #fff8e1; }
 
         .notebook-lines {
             background-image: repeating-linear-gradient(transparent, transparent 31px, #ffccbc 31px, #ffccbc 33px);
@@ -138,19 +124,13 @@
             padding-top: 8px;
         }
 
-        .page-section {
-            display: none;
-            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-        .page-section.active {
-            display: block;
-        }
+        .page-section { display: none; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .page-section.active { display: block; }
         @keyframes popIn {
             from { opacity: 0; transform: scale(0.9) translateY(20px); }
             to { opacity: 1; transform: scale(1) translateY(0); }
         }
         
-        /* Floating pill Nav instead of full width glass */
         .bottom-nav-pill {
             background: white;
             border: 4px solid #ff8a65;
@@ -158,34 +138,34 @@
             box-shadow: 0px 8px 0px 0px #ffccbc;
         }
         
-        /* Hard press button animation */
-        .btn-press:active {
-            transform: translateY(4px);
-            box-shadow: 0px 0px 0px 0px !important;
-        }
+        .btn-press:active { transform: translateY(4px); box-shadow: 0px 0px 0px 0px !important; }
 
-        /* Radio button cute styles */
         input[type="radio"]:checked + span.author-jhingy {
-            background-color: #fff3e0;
-            border-color: #ff8a65;
-            color: #ff8a65;
-            box-shadow: 2px 2px 0px 0px #ff8a65;
+            background-color: #fff3e0; border-color: #ff8a65; color: #ff8a65; box-shadow: 2px 2px 0px 0px #ff8a65;
         }
         input[type="radio"]:checked + span.author-posto {
-            background-color: #fce4ec;
-            border-color: #f06292;
-            color: #f06292;
-            box-shadow: 2px 2px 0px 0px #f06292;
+            background-color: #fce4ec; border-color: #f06292; color: #f06292; box-shadow: 2px 2px 0px 0px #f06292;
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center pb-32 text-slate-800 overflow-x-hidden font-bold">
 
-    <!-- Dynamic Background Container -->
     <div id="dynamic-bg" class="fixed inset-0 pointer-events-none z-0 overflow-hidden"></div>
 
+    <!-- Top Floating Actions -->
+    <div class="fixed top-4 left-4 z-50">
+        <button onclick="openSettingsModal()" class="btn-press bg-white text-gray-500 w-12 h-12 flex items-center justify-center rounded-full border-4 border-gray-200 shadow-[4px_4px_0px_0px_#e2e8f0]">
+            <i class="fa-solid fa-gear text-xl"></i>
+        </button>
+    </div>
+    <div class="fixed top-4 right-4 z-50">
+        <button onclick="triggerSOS()" class="btn-press bg-red-500 text-white px-4 py-2 flex items-center gap-2 rounded-full border-4 border-red-300 shadow-[4px_4px_0px_0px_#ef5350] animate-pulse">
+            <i class="fa-solid fa-siren-on text-xl"></i> <span class="font-display tracking-widest text-lg">SOS</span>
+        </button>
+    </div>
+
     <!-- Header -->
-    <header class="text-center mb-8 animate-float mt-8 px-4 relative z-10">
+    <header class="text-center mb-8 animate-float mt-12 px-4 relative z-10">
         <h1 class="font-display text-5xl md:text-6xl text-zoo-orange tracking-wider" style="-webkit-text-stroke: 2px white; text-shadow: 3px 3px 0px #ffccbc;">
             🦊 Jhingy <span class="text-zoo-pink px-1">loves</span> Posto 🐰
         </h1>
@@ -196,7 +176,7 @@
 
     <main class="w-full max-w-4xl px-4 relative z-10 flex-grow">
         
-        <!-- PAGE 1: HOME & SETTINGS -->
+        <!-- PAGE 1: HOME -->
         <section id="page-home" class="page-section active flex flex-col gap-8">
             <div class="bg-white rounded-[2rem] p-6 md:p-8 border-4 border-zoo-orange shadow-kawaii text-center transform -rotate-1">
                 <div class="border-4 border-dashed border-zoo-orange rounded-2xl p-2 mb-4 bg-zoo-bg inline-block">
@@ -205,12 +185,27 @@
                 <h2 class="font-display text-3xl text-zoo-orange mb-2">Ready for duty! <span class="inline-block animate-wiggle">🐾</span></h2>
                 <p class="text-lg text-gray-600 font-bold mb-2">Tap the cute buttons below to explore!</p>
             </div>
+
+            <!-- Cuddle Timer -->
+            <div class="bg-white rounded-[2rem] p-6 border-4 border-zoo-pink shadow-kawaii transform rotate-1 text-center mt-2">
+                <h3 class="font-display text-2xl text-zoo-pink mb-4"><i class="fa-solid fa-clock mr-2"></i>Time Since We Met</h3>
+                
+                <div class="flex justify-center gap-2 md:gap-4 text-zoo-pink font-bold text-xl md:text-2xl mb-6" id="timerDisplay">
+                    <div class="bg-pink-50 p-3 rounded-xl border-2 border-pink-200 shadow-sm w-16 md:w-20"><span id="t-days" class="block text-2xl md:text-3xl font-display text-zoo-pink">0</span><span class="text-sm">Days</span></div>
+                    <div class="bg-pink-50 p-3 rounded-xl border-2 border-pink-200 shadow-sm w-16 md:w-20"><span id="t-hours" class="block text-2xl md:text-3xl font-display text-zoo-pink">0</span><span class="text-sm">Hrs</span></div>
+                    <div class="bg-pink-50 p-3 rounded-xl border-2 border-pink-200 shadow-sm w-16 md:w-20"><span id="t-mins" class="block text-2xl md:text-3xl font-display text-zoo-pink">0</span><span class="text-sm">Min</span></div>
+                    <div class="bg-pink-50 p-3 rounded-xl border-2 border-pink-200 shadow-sm w-16 md:w-20"><span id="t-secs" class="block text-2xl md:text-3xl font-display text-zoo-pink">0</span><span class="text-sm">Sec</span></div>
+                </div>
+
+                <button onclick="resetMeetingTimer()" class="btn-press px-6 py-3 w-full bg-zoo-pink text-white rounded-2xl font-display text-2xl tracking-wide border-4 border-pink-300 shadow-kawaii-pink transition-all">
+                    We just cuddled! 🥰
+                </button>
+            </div>
         </section>
 
-        <!-- PAGE 2: MEMORY MAKER -->
+        <!-- PAGE 2: MEMORY MAKER (GOOGLE DRIVE API) -->
         <section id="page-memories" class="page-section max-w-md mx-auto">
             <div class="bg-white rounded-[2rem] p-6 border-4 border-zoo-orange shadow-kawaii relative">
-                <!-- Cute corner decoration -->
                 <div class="absolute -top-6 -right-6 text-5xl animate-wiggle">✨</div>
                 
                 <div class="flex justify-between items-center mb-6 relative z-10">
@@ -218,7 +213,7 @@
                         Memories 📸
                     </h2>
                     <button onclick="loadRandomImage()" class="btn-press flex items-center gap-2 px-5 py-2 bg-zoo-orange text-white rounded-full font-display text-xl border-4 border-orange-300 shadow-kawaii-orange transition-all">
-                        <i class="fa-solid fa-rotate"></i> Next
+                        <i class="fa-solid fa-rotate"></i> Next Image
                     </button>
                 </div>
 
@@ -235,7 +230,7 @@
                 </div>
                 
                 <div class="polaroid mx-auto w-full max-w-[240px] mb-8 relative z-10">
-                    <img id="memoryImage" src="https://placehold.co/400x400/ff8a65/ffffff?text=Fox+Memory" alt="Memory" class="w-full aspect-square object-cover rounded-md border-2 border-gray-200">
+                    <img id="memoryImage" src="https://placehold.co/400x400/ff8a65/ffffff?text=Waiting+for+Drive+📸" alt="Memory" class="w-full aspect-square object-cover rounded-md border-2 border-gray-200">
                     <p class="text-center mt-4 text-sm text-zoo-orange font-bold tracking-wider font-sans" id="imageToken">#TOKEN</p>
                 </div>
 
@@ -257,10 +252,8 @@
         <!-- PAGE 3: HUGS -->
         <section id="page-hugs" class="page-section max-w-md mx-auto">
             <div class="bg-white rounded-[3rem] p-8 border-4 border-zoo-pink shadow-kawaii text-center flex flex-col items-center justify-center h-[450px] relative">
-                <!-- Decorative stars -->
                 <div class="absolute top-4 left-4 text-3xl text-pink-300 animate-wiggle">⭐</div>
                 <div class="absolute bottom-4 right-4 text-3xl text-pink-300 animate-wiggle" style="animation-delay: 0.5s">🌸</div>
-
                 <h2 class="font-display text-5xl text-zoo-pink mb-12">Need a Hug? <br><span class="text-3xl mt-2 block">🥺👉👈</span></h2>
                 
                 <button onclick="requestHug()" class="relative group z-10 focus:outline-none">
@@ -279,16 +272,12 @@
         <section id="page-calls" class="page-section max-w-md mx-auto">
             <div class="bg-white rounded-[3rem] p-8 border-4 border-zoo-blue shadow-kawaii text-center relative h-[400px] flex flex-col justify-center items-center">
                 <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-6xl animate-bounce-slight">🚓</div>
-                
-                <h2 class="font-display text-4xl text-zoo-blue mb-4 mt-6">
-                    ZPD Dispatch!
-                </h2>
+                <h2 class="font-display text-4xl text-zoo-blue mb-4 mt-6">ZPD Dispatch!</h2>
                 <div class="bg-blue-50 border-4 border-dashed border-zoo-blue rounded-2xl p-4 mb-8 w-full">
                     <p class="text-zoo-blue font-bold text-xl">🚨 Emergency cute meeting required right now! 🚨</p>
                 </div>
-                
-                <button onclick="startVideoCall()" class="btn-press w-full py-5 bg-zoo-blue text-white font-display text-3xl tracking-wide rounded-2xl border-4 border-blue-300 shadow-kawaii-blue transition-all flex justify-center items-center gap-3">
-                    <i class="fa-solid fa-video animate-pulse"></i> Call Now!
+                <button onclick="openGoogleMeet()" class="btn-press w-full py-5 bg-zoo-blue text-white font-display text-3xl tracking-wide rounded-2xl border-4 border-blue-300 shadow-kawaii-blue transition-all flex justify-center items-center gap-3">
+                    <i class="fa-brands fa-google hover:animate-spin"></i> Join Google Meet!
                 </button>
             </div>
         </section>
@@ -297,9 +286,9 @@
         <section id="page-diary" class="page-section max-w-2xl mx-auto w-full relative z-10">
             <div class="bg-white rounded-[3rem] p-6 md:p-8 border-4 border-zoo-green shadow-kawaii relative min-h-[400px]">
                 <div class="absolute -top-6 left-6 text-5xl animate-bounce-slight">📖</div>
-                <h2 class="font-display text-4xl text-zoo-green mb-8 text-center mt-4">
-                    Our Diary
-                </h2>
+                <div class="flex justify-between items-center mb-8 mt-4">
+                    <h2 class="font-display text-4xl text-zoo-green m-0">Our Diary</h2>
+                </div>
                 
                 <div id="empty-diary" class="text-center py-10">
                     <p class="text-2xl font-display text-gray-400 mb-4">No memories saved yet! 🥺</p>
@@ -314,33 +303,134 @@
             </div>
         </section>
 
+        <!-- PAGE 6: JOURNAL & BOOK REVIEWS -->
+        <section id="page-journal" class="page-section max-w-2xl mx-auto w-full relative z-10">
+            <div class="bg-white rounded-[3rem] p-6 md:p-8 border-4 border-zoo-purple shadow-kawaii relative mb-8">
+                <div class="absolute -top-6 -right-6 text-5xl animate-wiggle">📚</div>
+                <h2 class="font-display text-4xl text-zoo-purple mb-6">Thoughts & Books 💭</h2>
+                
+                <div class="flex justify-center gap-3 mb-6 bg-purple-50 py-3 rounded-2xl border-2 border-dashed border-purple-200">
+                    <label class="cursor-pointer">
+                        <input type="radio" name="entryType" value="Journal" class="peer sr-only" checked>
+                        <span class="px-4 py-2 rounded-xl border-2 border-gray-300 font-display text-lg text-gray-400 transition-all inline-block peer-checked:bg-purple-100 peer-checked:border-zoo-purple peer-checked:text-zoo-purple peer-checked:shadow-[2px_2px_0px_0px_#c084fc]">📝 Journal</span>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="entryType" value="Book Review" class="peer sr-only">
+                        <span class="px-4 py-2 rounded-xl border-2 border-gray-300 font-display text-lg text-gray-400 transition-all inline-block peer-checked:bg-purple-100 peer-checked:border-zoo-purple peer-checked:text-zoo-purple peer-checked:shadow-[2px_2px_0px_0px_#c084fc]">📚 Book Review</span>
+                    </label>
+                </div>
+
+                <div class="space-y-4 bg-purple-50 p-4 rounded-2xl border-4 border-dashed border-zoo-purple">
+                    <input type="text" id="journalTitle" placeholder="Title or Book Name..." class="w-full p-3 bg-white border-2 border-zoo-purple rounded-xl outline-none focus:border-purple-600 font-bold text-lg text-gray-700">
+                    <textarea id="journalContent" rows="6" class="notebook-lines w-full p-4 bg-transparent border-none outline-none resize-none text-gray-700 text-lg font-bold" placeholder="Write your thoughts or review here..."></textarea>
+                </div>
+
+                <div class="flex justify-center gap-3 mt-6 mb-6">
+                    <label class="cursor-pointer flex-1 text-center">
+                        <input type="radio" name="journalAuthor" value="Jhingy 🦊" class="peer sr-only" checked>
+                        <span class="author-jhingy w-full px-2 py-2 rounded-xl border-2 border-gray-300 font-display text-lg text-gray-400 transition-all inline-block">I'm Jhingy 🦊</span>
+                    </label>
+                    <label class="cursor-pointer flex-1 text-center">
+                        <input type="radio" name="journalAuthor" value="Posto 🐰" class="peer sr-only">
+                        <span class="author-posto w-full px-2 py-2 rounded-xl border-2 border-gray-300 font-display text-lg text-gray-400 transition-all inline-block">I'm Posto 🐰</span>
+                    </label>
+                </div>
+
+                <button onclick="saveJournalEntry()" class="btn-press w-full py-4 bg-zoo-purple text-white font-display text-2xl tracking-wide rounded-2xl border-4 border-purple-400 shadow-kawaii-purple transition-all flex justify-center items-center gap-3">
+                    <i class="fa-solid fa-pen-nib animate-pulse"></i> Publish Entry!
+                </button>
+            </div>
+
+            <!-- Feed of Entries -->
+            <div id="journal-feed" class="space-y-6 hidden">
+                <!-- Dynamic journal cards will go here -->
+            </div>
+            <div id="empty-journal" class="text-center py-10 bg-white rounded-[2rem] border-4 border-dashed border-gray-200">
+                <p class="text-2xl font-display text-gray-400">No entries yet! Be the first to write! ✍️</p>
+            </div>
+        </section>
+
     </main>
 
     <!-- Floating Cute Bottom Navigation -->
-    <nav class="fixed bottom-6 left-1/2 transform -translate-x-1/2 w-[95%] max-w-lg z-40">
-        <div class="bottom-nav-pill px-2 py-2 flex justify-between items-center bg-white">
-            <button onclick="navTo('page-home')" class="nav-btn w-1/5 py-2 rounded-full text-zoo-orange flex flex-col items-center gap-1 transition-all active:scale-90 hover:bg-orange-50" id="nav-page-home">
-                <i class="fa-solid fa-house text-xl md:text-2xl"></i>
-                <span class="text-[10px] md:text-[11px] font-display tracking-wider">Home</span>
+    <nav class="fixed bottom-6 left-1/2 transform -translate-x-1/2 w-[98%] max-w-2xl z-40">
+        <div class="bottom-nav-pill px-2 py-2 flex justify-between items-center bg-white gap-1 overflow-x-auto">
+            <button onclick="navTo('page-home')" class="nav-btn flex-1 py-2 rounded-full text-zoo-orange flex flex-col items-center gap-1 transition-all active:scale-90 hover:bg-orange-50" id="nav-page-home">
+                <i class="fa-solid fa-house text-lg md:text-xl"></i>
+                <span class="text-[9px] md:text-[10px] font-display tracking-wider">Home</span>
             </button>
-            <button onclick="navTo('page-memories')" class="nav-btn w-1/5 py-2 rounded-full text-gray-400 flex flex-col items-center gap-1 transition-all active:scale-90 hover:bg-orange-50" id="nav-page-memories">
-                <i class="fa-solid fa-camera-retro text-xl md:text-2xl"></i>
-                <span class="text-[10px] md:text-[11px] font-display tracking-wider">Memories</span>
+            <button onclick="navTo('page-memories')" class="nav-btn flex-1 py-2 rounded-full text-gray-400 flex flex-col items-center gap-1 transition-all active:scale-90 hover:bg-orange-50" id="nav-page-memories">
+                <i class="fa-solid fa-camera-retro text-lg md:text-xl"></i>
+                <span class="text-[9px] md:text-[10px] font-display tracking-wider">Memories</span>
             </button>
-            <button onclick="navTo('page-diary')" class="nav-btn w-1/5 py-2 rounded-full text-gray-400 flex flex-col items-center gap-1 transition-all active:scale-90 hover:bg-green-50" id="nav-page-diary">
-                <i class="fa-solid fa-book text-xl md:text-2xl"></i>
-                <span class="text-[10px] md:text-[11px] font-display tracking-wider">Diary</span>
+            <button onclick="navTo('page-diary')" class="nav-btn flex-1 py-2 rounded-full text-gray-400 flex flex-col items-center gap-1 transition-all active:scale-90 hover:bg-green-50" id="nav-page-diary">
+                <i class="fa-solid fa-book text-lg md:text-xl"></i>
+                <span class="text-[9px] md:text-[10px] font-display tracking-wider">Diary</span>
             </button>
-            <button onclick="navTo('page-hugs')" class="nav-btn w-1/5 py-2 rounded-full text-gray-400 flex flex-col items-center gap-1 transition-all active:scale-90 hover:bg-pink-50" id="nav-page-hugs">
-                <i class="fa-solid fa-heart text-xl md:text-2xl"></i>
-                <span class="text-[10px] md:text-[11px] font-display tracking-wider">Hugs</span>
+            <button onclick="navTo('page-journal')" class="nav-btn flex-1 py-2 rounded-full text-gray-400 flex flex-col items-center gap-1 transition-all active:scale-90 hover:bg-purple-50" id="nav-page-journal">
+                <i class="fa-solid fa-pen-nib text-lg md:text-xl"></i>
+                <span class="text-[9px] md:text-[10px] font-display tracking-wider">Notes</span>
             </button>
-            <button onclick="navTo('page-calls')" class="nav-btn w-1/5 py-2 rounded-full text-gray-400 flex flex-col items-center gap-1 transition-all active:scale-90 hover:bg-blue-50" id="nav-page-calls">
-                <i class="fa-solid fa-walkie-talkie text-xl md:text-2xl"></i>
-                <span class="text-[10px] md:text-[11px] font-display tracking-wider">Call</span>
+            <button onclick="navTo('page-hugs')" class="nav-btn flex-1 py-2 rounded-full text-gray-400 flex flex-col items-center gap-1 transition-all active:scale-90 hover:bg-pink-50" id="nav-page-hugs">
+                <i class="fa-solid fa-heart text-lg md:text-xl"></i>
+                <span class="text-[9px] md:text-[10px] font-display tracking-wider">Hugs</span>
+            </button>
+            <button onclick="navTo('page-calls')" class="nav-btn flex-1 py-2 rounded-full text-gray-400 flex flex-col items-center gap-1 transition-all active:scale-90 hover:bg-blue-50" id="nav-page-calls">
+                <i class="fa-solid fa-video text-lg md:text-xl"></i>
+                <span class="text-[9px] md:text-[10px] font-display tracking-wider">Call</span>
             </button>
         </div>
     </nav>
+
+    <!-- Settings Modal (Google Drive + Global Connection + Google Meet) -->
+    <div id="settingsModal" class="fixed inset-0 bg-blue-900/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 transition-opacity">
+        <div class="bg-white p-6 md:p-8 rounded-[2rem] border-4 border-gray-300 max-w-md w-full shadow-kawaii transform scale-95 transition-transform duration-300 max-h-[90vh] overflow-y-auto" id="settingsModalContent">
+            <h3 class="font-display text-3xl text-gray-700 mb-2"><i class="fa-solid fa-key text-zoo-orange mr-2"></i>Global Setup</h3>
+            <p class="text-sm font-bold text-gray-500 mb-6 border-b-2 border-dashed border-gray-200 pb-4">Connect your Google Drive for photos, your Google Meet link, and paste your Firebase Database config to keep it all synced globally! 🌍</p>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold text-gray-600 ml-2 mb-1">Google Meet Link</label>
+                    <input type="text" id="setMeetLink" placeholder="https://meet.google.com/abc-defg-hij" class="w-full p-3 bg-gray-50 border-2 border-gray-300 rounded-xl outline-none focus:border-zoo-blue">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-600 ml-2 mb-1">Google Drive Folder ID (Photos)</label>
+                    <input type="text" id="setDriveFolder" placeholder="1A2B3C..." class="w-full p-3 bg-gray-50 border-2 border-gray-300 rounded-xl outline-none focus:border-zoo-blue">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-600 ml-2 mb-1">Google API Key</label>
+                    <input type="password" id="setDriveKey" placeholder="AIzaSy..." class="w-full p-3 bg-gray-50 border-2 border-gray-300 rounded-xl outline-none focus:border-zoo-blue">
+                </div>
+                <div class="pt-2 border-t-2 border-dashed border-gray-200">
+                    <label class="block text-sm font-bold text-gray-600 ml-2 mb-1">Firebase Config JSON (Global Diary Sync)</label>
+                    <textarea id="setFirebaseConfig" rows="4" placeholder='{"apiKey": "...", "authDomain": "...", "projectId": "..."}' class="w-full p-3 bg-gray-50 border-2 border-gray-300 rounded-xl outline-none focus:border-zoo-green text-xs font-mono"></textarea>
+                    <p class="text-xs text-gray-400 mt-2 font-bold"><i class="fa-solid fa-circle-info text-zoo-blue"></i> Since GitHub Pages is static, you need a free Firebase project config to save and sync memories between devices securely.</p>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-3 mt-8">
+                <div class="flex gap-4">
+                    <button onclick="closeSettingsModal()" class="w-1/3 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl transition-all">Cancel</button>
+                    <button onclick="saveSettings()" class="w-2/3 py-3 bg-zoo-green hover:bg-green-500 text-white font-display text-xl rounded-xl border-4 border-green-300 shadow-[2px_2px_0px_0px_#81c784] transition-all btn-press">Save & Connect 🚀</button>
+                </div>
+                <button onclick="generateMagicLink()" class="w-full py-3 bg-zoo-pink hover:bg-pink-500 text-white font-display text-xl rounded-xl border-4 border-pink-300 shadow-[2px_2px_0px_0px_#f06292] transition-all btn-press mt-2">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Copy Magic Link for Posto!
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cuddle Confirm Modal -->
+    <div id="cuddleConfirmModal" class="fixed inset-0 bg-pink-100/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 transition-opacity">
+        <div class="bg-white p-8 rounded-[3rem] border-4 border-zoo-pink max-w-sm w-full text-center shadow-kawaii transform scale-95 transition-transform duration-300" id="cuddleConfirmModalContent">
+            <h3 class="font-display text-4xl text-zoo-pink mb-4">Did we just cuddle? 🥰</h3>
+            <p class="text-xl text-gray-600 font-bold mb-8">This will reset our timer back to zero!</p>
+            <div class="flex gap-4">
+                <button onclick="closeCuddleModal()" class="w-1/2 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl transition-all btn-press">Not yet</button>
+                <button onclick="confirmResetTimer()" class="w-1/2 py-3 bg-zoo-pink hover:bg-pink-500 text-white font-display text-xl rounded-xl border-4 border-pink-300 shadow-[2px_2px_0px_0px_#f06292] transition-all btn-press">Yes! 💕</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Hug Modal -->
     <div id="hugModal" class="fixed inset-0 bg-pink-100/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 transition-opacity">
@@ -370,139 +460,278 @@
     </div>
 
     <!-- Cute Toast Notification -->
-    <div id="toast" class="fixed top-8 right-8 bg-white border-4 px-6 py-4 rounded-3xl shadow-kawaii transform -translate-y-24 opacity-0 transition-all duration-300 z-[100] flex items-center gap-3 pointer-events-none">
+    <div id="toast" class="fixed top-8 left-1/2 transform -translate-x-1/2 bg-white border-4 px-6 py-4 rounded-3xl shadow-kawaii -translate-y-32 opacity-0 transition-all duration-300 z-[100] flex items-center gap-3 pointer-events-none w-max max-w-[90vw]">
         <div id="toastIcon" class="text-3xl animate-bounce-slight"></div>
         <span id="toastMsg" class="text-xl font-display tracking-wide">Saved!</span>
     </div>
 
-    <!-- Firebase Cloud Storage Module -->
+    <!-- DYNAMIC GLOBAL FIREBASE CONNECTION -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Check if we have a valid cloud database config
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-        
-        // If no config is found (like on GitHub Pages), disable cloud sync gracefully so the app doesn't break
-        if (Object.keys(firebaseConfig).length > 0) {
+        const configStr = localStorage.getItem('zh_firebaseConfig');
+        window.firebaseInitialized = false;
+
+        if (configStr && configStr.trim() !== "") {
             try {
+                const firebaseConfig = JSON.parse(configStr);
                 const app = initializeApp(firebaseConfig);
                 const auth = getAuth(app);
                 const db = getFirestore(app);
-                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
-                let currentUser = null;
-
-                const initAuth = async () => {
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } else {
-                        await signInAnonymously(auth);
-                    }
-                };
-                initAuth();
+                signInAnonymously(auth).catch(e => console.error("Global Connection Auth error:", e));
 
                 onAuthStateChanged(auth, (user) => {
-                    currentUser = user;
                     if (user) {
-                        const diaryRef = collection(db, 'artifacts', appId, 'public', 'data', 'diary_entries');
+                        window.globalDb = db;
+                        window.firebaseInitialized = true;
                         
-                        onSnapshot(diaryRef, (snapshot) => {
+                        // 1. Sync Diary Globally
+                        const q = query(collection(db, "zootopia_diary"), orderBy("timestamp", "desc"));
+                        onSnapshot(q, (snapshot) => {
                             const entries = [];
-                            snapshot.forEach(doc => {
-                                entries.push({ docId: doc.id, ...doc.data() });
-                            });
-                            entries.sort((a, b) => b.timestamp - a.timestamp);
+                            snapshot.forEach(doc => entries.push({ id: doc.id, ...doc.data() }));
                             if (window.renderCloudDiary) window.renderCloudDiary(entries);
-                        }, (error) => console.error("Diary sync error:", error));
+                        }, (error) => console.error("Diary global sync error:", error));
+
+                        // 2. Sync Cuddle Timer Globally
+                        const timerRef = collection(db, "zootopia_timer");
+                        onSnapshot(timerRef, (snapshot) => {
+                            snapshot.forEach(document => {
+                                if (document.id === 'last_met') {
+                                    if (window.handleCloudTimerUpdate) window.handleCloudTimerUpdate(document.data().timestamp);
+                                }
+                            });
+                        });
+                        
+                        // 3. Sync Journal/Books Globally
+                        const qJournal = query(collection(db, "zootopia_journal"), orderBy("timestamp", "desc"));
+                        onSnapshot(qJournal, (snapshot) => {
+                            const entries = [];
+                            snapshot.forEach(doc => entries.push({ id: doc.id, ...doc.data() }));
+                            if (window.renderCloudJournal) window.renderCloudJournal(entries);
+                        }, (error) => console.error("Journal global sync error:", error));
                     }
                 });
 
                 window.saveToCloudDiary = async (memoryData) => {
-                    if (!currentUser) return false;
+                    if (!window.globalDb) return false;
                     try {
-                        const diaryRef = collection(db, 'artifacts', appId, 'public', 'data', 'diary_entries');
-                        await addDoc(diaryRef, { ...memoryData, timestamp: Date.now() });
+                        await addDoc(collection(window.globalDb, "zootopia_diary"), memoryData);
                         return true;
                     } catch (e) {
-                        console.error("Cloud save failed", e);
+                        console.error("Cloud Save Error:", e);
                         return false;
                     }
                 };
+
+                window.saveToCloudJournal = async (journalData) => {
+                    if (!window.globalDb) return false;
+                    try {
+                        await addDoc(collection(window.globalDb, "zootopia_journal"), journalData);
+                        return true;
+                    } catch (e) {
+                        console.error("Journal Cloud Save Error:", e);
+                        return false;
+                    }
+                };
+
+                window.syncTimerToCloud = async (timestamp) => {
+                    if (!window.globalDb) return;
+                    try {
+                        await setDoc(doc(window.globalDb, "zootopia_timer", "last_met"), { timestamp: timestamp });
+                    } catch(e) { console.error("Timer Sync Error:", e); }
+                };
+
             } catch (err) {
-                console.warn("Firebase initialization skipped:", err);
+                console.error("Firebase init failed. Ensure JSON format is correct.", err);
             }
-        } else {
-            console.warn("No Cloud Database config found. Falling back to local session diary.");
         }
     </script>
 
     <script>
-        // --- Single Page App Navigation ---
-        function navTo(pageId) {
-            document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('text-zoo-orange', 'text-zoo-pink', 'text-zoo-blue', 'text-zoo-green');
-                btn.classList.add('text-gray-400');
-            });
+        // --- SECURE SETTINGS LOGIC ---
+        let APP_CONFIG = {
+            driveFolderId: localStorage.getItem('zh_driveFolderId') || "",
+            apiKey: localStorage.getItem('zh_apiKey') || "",
+            firebaseConfig: localStorage.getItem('zh_firebaseConfig') || "",
+            meetLink: localStorage.getItem('zh_meetLink') || ""
+        };
 
-            document.getElementById(pageId).classList.add('active');
+        function openSettingsModal() {
+            document.getElementById('setMeetLink').value = APP_CONFIG.meetLink;
+            document.getElementById('setDriveFolder').value = APP_CONFIG.driveFolderId;
+            document.getElementById('setDriveKey').value = APP_CONFIG.apiKey;
+            document.getElementById('setFirebaseConfig').value = APP_CONFIG.firebaseConfig;
             
-            const activeBtn = document.getElementById('nav-' + pageId);
-            activeBtn.classList.remove('text-gray-400');
-            if(pageId === 'page-hugs') activeBtn.classList.add('text-zoo-pink');
-            else if(pageId === 'page-calls') activeBtn.classList.add('text-zoo-blue');
-            else if(pageId === 'page-diary') activeBtn.classList.add('text-zoo-green');
-            else activeBtn.classList.add('text-zoo-orange');
+            const modal = document.getElementById('settingsModal');
+            const content = document.getElementById('settingsModalContent');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'translate-y-10');
+                content.classList.add('scale-100', 'translate-y-0');
+            }, 10);
         }
 
-        // --- Dynamic Background Setup ---
-        function createFloatingElements() {
-            const bgContainer = document.getElementById('dynamic-bg');
-            const elements = ['🥕', '🐾', '🐰', '🦊', '✨', '🌸', '💕'];
+        function closeSettingsModal() {
+            const modal = document.getElementById('settingsModal');
+            const content = document.getElementById('settingsModalContent');
+            content.classList.remove('scale-100', 'translate-y-0');
+            content.classList.add('scale-95', 'translate-y-10');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+        }
+
+        function saveSettings() {
+            const keys = {
+                meetLink: document.getElementById('setMeetLink').value.trim(),
+                driveFolderId: document.getElementById('setDriveFolder').value.trim(),
+                apiKey: document.getElementById('setDriveKey').value.trim(),
+                firebaseConfig: document.getElementById('setFirebaseConfig').value.trim()
+            };
+
+            localStorage.setItem('zh_meetLink', keys.meetLink);
+            localStorage.setItem('zh_driveFolderId', keys.driveFolderId);
+            localStorage.setItem('zh_apiKey', keys.apiKey);
+            localStorage.setItem('zh_firebaseConfig', keys.firebaseConfig);
             
-            for(let i = 0; i < 20; i++) {
-                const el = document.createElement('div');
-                el.innerText = elements[Math.floor(Math.random() * elements.length)];
-                el.className = 'floating-element text-3xl md:text-4xl';
+            APP_CONFIG = { ...APP_CONFIG, ...keys };
+            
+            closeSettingsModal();
+            showToast("Global connection updated! 🌍", "border-zoo-blue text-zoo-blue", "🚀");
+            
+            // Reload page to apply global database changes properly
+            setTimeout(() => location.reload(), 1500);
+        }
+
+        // --- MAGIC LINK LOGIC ---
+        function generateMagicLink() {
+            saveSettings();
+            
+            const d = encodeURIComponent(APP_CONFIG.driveFolderId);
+            const k = encodeURIComponent(APP_CONFIG.apiKey);
+            const m = encodeURIComponent(APP_CONFIG.meetLink);
+            const f = encodeURIComponent(btoa(APP_CONFIG.firebaseConfig)); 
+            
+            const magicUrl = `${window.location.origin}${window.location.pathname}?d=${d}&k=${k}&m=${m}&f=${f}`;
+            
+            navigator.clipboard.writeText(magicUrl).then(() => {
+                showToast("Magic Link Copied! Send it to her! 🪄", "border-zoo-pink text-zoo-pink", "✨");
+            }).catch(err => {
+                const textArea = document.createElement("textarea");
+                textArea.value = magicUrl;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand("copy");
+                document.body.removeChild(textArea);
+                showToast("Magic Link Copied! Send it to her! 🪄", "border-zoo-pink text-zoo-pink", "✨");
+            });
+        }
+
+        function checkMagicLinkOnLoad() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.has('d') || params.has('k') || params.has('f') || params.has('m')) {
+                if (params.has('d')) localStorage.setItem('zh_driveFolderId', decodeURIComponent(params.get('d')));
+                if (params.has('k')) localStorage.setItem('zh_apiKey', decodeURIComponent(params.get('k')));
+                if (params.has('m')) localStorage.setItem('zh_meetLink', decodeURIComponent(params.get('m')));
+                if (params.has('f')) {
+                    try {
+                        localStorage.setItem('zh_firebaseConfig', atob(decodeURIComponent(params.get('f'))));
+                    } catch(e) { console.error("Failed to parse magic link firebase config"); }
+                }
                 
-                // Randomize position, animation duration, and delay
-                el.style.left = `${Math.random() * 100}vw`;
-                el.style.animationDuration = `${10 + Math.random() * 25}s`;
-                el.style.animationDelay = `${Math.random() * 10}s`;
+                APP_CONFIG.driveFolderId = localStorage.getItem('zh_driveFolderId');
+                APP_CONFIG.apiKey = localStorage.getItem('zh_apiKey');
+                APP_CONFIG.firebaseConfig = localStorage.getItem('zh_firebaseConfig');
+                APP_CONFIG.meetLink = localStorage.getItem('zh_meetLink');
+
+                window.history.replaceState({}, document.title, window.location.pathname);
                 
-                bgContainer.appendChild(el);
+                showToast("Magic Link Connected successfully! 💖", "border-zoo-pink text-zoo-pink", "✨");
+                
+                setTimeout(() => location.reload(), 2000);
             }
         }
 
-        // --- BACKEND CONFIGURATION ---
-        // 👇 ADD YOUR KEYS HERE:
-        // ⚠️ SECURITY WARNING: Exposing a GitHub Personal Access Token in frontend code 
-        // means anyone inspecting the site can modify your repo. Use a token with 
-        // strictly limited scopes (only "repo" access) and keep your repo private if possible.
-        const APP_CONFIG = {
-            driveFolderId: "YOUR_FOLDER_ID_HERE", // <-- Replace with your Folder ID 
-            apiKey: "YOUR_API_KEY_HERE",          // <-- Replace with your Google API Key
-            githubToken: "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",  // <-- Replace with your GitHub Fine-Grained Personal Access Token
-            githubOwner: "Supriyoiiest",  // <-- Replace with your GitHub Username (e.g., "octocat")
-            githubRepo: "LDR_meet",       // <-- Replace with your GitHub Repository name (e.g., "zootopia-love-hub")
-            githubBranch: "main"                  // <-- Replace with your branch name (usually "main")
+        // --- SOS PANIC BUTTON ---
+        function triggerSOS() {
+            showToast("Opening Email for SOS... ❤️‍🩹", "border-red-500 text-red-500", "🚨");
+            setTimeout(() => {
+                const subject = encodeURIComponent("SOS - Panic Attack - I need you");
+                const body = encodeURIComponent("I am having a panic attack. Please check your phone and contact me immediately. I need you right now.");
+                window.location.href = `mailto:jhinghysen@gmail.com?subject=${subject}&body=${body}`;
+            }, 800);
+        }
+
+        // --- CUDDLE TIMER LOGIC ---
+        let lastMetTime = parseInt(localStorage.getItem('zh_lastMetTime')) || Date.now();
+        
+        function updateTimer() {
+            const now = Date.now();
+            const diff = Math.max(0, now - lastMetTime);
+            
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const m = Math.floor((diff / 1000 / 60) % 60);
+            const s = Math.floor((diff / 1000) % 60);
+            
+            document.getElementById('t-days').innerText = d;
+            document.getElementById('t-hours').innerText = h;
+            document.getElementById('t-mins').innerText = m;
+            document.getElementById('t-secs').innerText = s;
+        }
+
+        function resetMeetingTimer() {
+            const modal = document.getElementById('cuddleConfirmModal');
+            const content = document.getElementById('cuddleConfirmModalContent');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'translate-y-10');
+                content.classList.add('scale-100', 'translate-y-0');
+            }, 10);
+        }
+
+        function closeCuddleModal() {
+            const modal = document.getElementById('cuddleConfirmModal');
+            const content = document.getElementById('cuddleConfirmModalContent');
+            content.classList.remove('scale-100', 'translate-y-0');
+            content.classList.add('scale-95', 'translate-y-10');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+        }
+
+        function confirmResetTimer() {
+            lastMetTime = Date.now();
+            localStorage.setItem('zh_lastMetTime', lastMetTime);
+            updateTimer();
+            showToast("Timer Reset! Yay! 🎉", "border-zoo-pink text-zoo-pink", "🕒");
+            
+            if (window.syncTimerToCloud) window.syncTimerToCloud(lastMetTime);
+            closeCuddleModal();
+        }
+
+        window.handleCloudTimerUpdate = function(cloudTime) {
+            if (cloudTime && cloudTime > lastMetTime) {
+                lastMetTime = cloudTime;
+                localStorage.setItem('zh_lastMetTime', lastMetTime);
+                updateTimer();
+            }
         };
 
-        // --- Drive API & Memory Logic ---
+        setInterval(updateTimer, 1000);
+
+        // --- GOOGLE DRIVE API IMAGE FETCHING ---
         let fetchedDriveImages = [
-            "https://placehold.co/400x400/ff8a65/ffffff?text=Waiting+for+Memories+🌸", 
+            "https://placehold.co/400x400/ff8a65/ffffff?text=Add+Keys+in+Settings+⚙️", 
             "https://placehold.co/400x400/81c784/ffffff?text=Waiting+for+Memories+✨",
             "https://placehold.co/400x400/4fc3f7/ffffff?text=Waiting+for+Memories+💖"
         ];
-        let currentToken = "";
-        let localDiaryFallback = []; // Used when Cloud Database is unavailable
+        let currentToken = generateToken();
+        let localDiaryFallback = JSON.parse(localStorage.getItem('zh_localDiary')) || []; 
 
         async function connectDrive() {
-            // Silently abort if keys aren't added yet
-            if(!APP_CONFIG.driveFolderId || !APP_CONFIG.apiKey || APP_CONFIG.driveFolderId === "YOUR_FOLDER_ID_HERE") {
-                console.log("No API keys detected. Using default placeholders.");
+            if(!APP_CONFIG.driveFolderId || !APP_CONFIG.apiKey) {
+                console.log("No Google Drive keys detected. Using default placeholders.");
                 return;
             }
 
@@ -516,16 +745,12 @@
                 if(data.error) throw new Error(data.error.message);
                 if(!data.files || data.files.length === 0) throw new Error("No pictures found!");
 
-                // Strongly filter out any images that don't have a thumbnail
                 fetchedDriveImages = data.files
                     .filter(file => file.thumbnailLink)
                     .map(file => file.thumbnailLink.replace(/=s\d+$/, '') + '=s800');
                     
-                if (fetchedDriveImages.length === 0) {
-                    throw new Error("No viewable thumbnails found in folder!");
-                }
+                if (fetchedDriveImages.length === 0) throw new Error("No viewable thumbnails!");
                 
-                // Reload the image view now that real images are loaded
                 loadRandomImage();
             } catch (error) {
                 console.error("Drive Sync Error:", error);
@@ -533,7 +758,7 @@
         }
 
         function generateToken() {
-            return "ZPD-" + Math.floor(1000 + Math.random() * 9000); // Shorter, cuter token
+            return "ZPD-" + Math.floor(1000 + Math.random() * 9000); 
         }
 
         function loadRandomImage() {
@@ -557,41 +782,6 @@
             updateLineCount();
         }
 
-        // --- GitHub API Logic ---
-        async function saveToGitHub(memoryData, mdContent) {
-            if (!APP_CONFIG.githubToken || APP_CONFIG.githubToken === "YOUR_GITHUB_PAT_HERE") {
-                return false;
-            }
-
-            const fileName = `memories/Memory_${memoryData.id}.md`;
-            const url = `https://api.github.com/repos/${APP_CONFIG.githubOwner}/${APP_CONFIG.githubRepo}/contents/${fileName}`;
-            
-            // Base64 encode the markdown content (handles unicode emojis properly)
-            const encodedContent = btoa(unescape(encodeURIComponent(mdContent)));
-
-            try {
-                const response = await fetch(url, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `Bearer ${APP_CONFIG.githubToken}`,
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/vnd.github.v3+json'
-                    },
-                    body: JSON.stringify({
-                        message: `Add memory ${memoryData.id} by ${memoryData.author}`,
-                        content: encodedContent,
-                        branch: APP_CONFIG.githubBranch
-                    })
-                });
-
-                if (!response.ok) throw new Error("GitHub API error");
-                return true;
-            } catch (error) {
-                console.error("GitHub Save Error:", error);
-                return false;
-            }
-        }
-
         async function saveMemory() {
             const text = document.getElementById('memoryText').value.trim();
             const lines = text.split('\n').filter(line => line.trim() !== '');
@@ -612,7 +802,20 @@
                 timestamp: Date.now()
             };
 
-            // Generate beautifully formatted Markdown content
+            // Attempt Global Connection Save (Firebase)
+            let cloudSuccess = false;
+            if (window.saveToCloudDiary) {
+                cloudSuccess = await window.saveToCloudDiary(memoryData);
+            }
+            
+            // Fallback locally if Global Connection isn't set up yet
+            if (!cloudSuccess) {
+                localDiaryFallback.unshift(memoryData);
+                localStorage.setItem('zh_localDiary', JSON.stringify(localDiaryFallback));
+                if (window.renderCloudDiary) window.renderCloudDiary(localDiaryFallback);
+            }
+
+            // Always download text file backup
             const mdContent = `# 🌸 JHINGY & POSTO'S MEMORY BANK 🌸\n\n` +
                               `**Magic ID:** ${currentToken}  \n` +
                               `**Date:** ${new Date().toLocaleDateString()}  \n` +
@@ -622,40 +825,22 @@
                               `![Memory View](${currentImgSrc})\n\n` +
                               `*Love you forever! 🦊❤️🐰*`;
 
-            // --- 1. Attempt Real-Time Firebase Save OR Fallback safely ---
-            let cloudSuccess = false;
-            if (window.saveToCloudDiary) {
-                cloudSuccess = await window.saveToCloudDiary(memoryData);
-            }
-            
-            if (!cloudSuccess) {
-                localDiaryFallback.unshift(memoryData);
-                if (window.renderCloudDiary) window.renderCloudDiary(localDiaryFallback);
-            }
-
-            // --- 2. Attempt GitHub Save ---
-            const githubSuccess = await saveToGitHub(memoryData, mdContent);
-
-            // --- 3. Download Local Markdown File Bonus ---
-            const blob = new Blob([mdContent], { type: 'text/markdown' });
+            const blob = new Blob([mdContent], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `Cute_Memory_${currentToken}.md`;
+            a.download = `Cute_Memory_${currentToken}.txt`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
 
-            if (githubSuccess) {
-                showToast("Saved to GitHub & Diary! 🐙✨", "border-gray-800 text-gray-800", "🚀");
-            } else if (cloudSuccess) {
-                showToast("Saved to our Cloud Diary! ☁️✨", "border-zoo-blue text-zoo-blue", "💖");
+            if (cloudSuccess) {
+                showToast("Saved & Synced Globally! 🌍✨", "border-zoo-blue text-zoo-blue", "💖");
             } else {
-                showToast("Saved as Markdown file! 📝✨", "border-zoo-green text-zoo-green", "💖");
+                showToast("Saved locally (Configure Global Sync in Settings) 📝", "border-zoo-green text-zoo-green", "💖");
             }
             
-            // Bring user to diary page to see it
             navTo('page-diary');
             setTimeout(() => loadRandomImage(), 1000);
         }
@@ -677,7 +862,6 @@
                 const authorClass = mem.author && mem.author.includes('Jhingy') 
                     ? 'bg-orange-100 text-zoo-orange border-2 border-zoo-orange' 
                     : 'bg-pink-100 text-zoo-pink border-2 border-zoo-pink';
-                
                 const authorDisplay = mem.author || 'Anonymous';
 
                 return `
@@ -693,6 +877,86 @@
             }).join('');
         };
 
+        // --- JOURNAL & BOOK REVIEW LOGIC ---
+        let localJournalFallback = JSON.parse(localStorage.getItem('zh_localJournal')) || [];
+
+        async function saveJournalEntry() {
+            const type = document.querySelector('input[name="entryType"]:checked').value;
+            const title = document.getElementById('journalTitle').value.trim();
+            const content = document.getElementById('journalContent').value.trim();
+            const author = document.querySelector('input[name="journalAuthor"]:checked').value;
+
+            if (!title || !content) {
+                showToast("Please fill out both the title and your thoughts! 🥺", "border-rose-400 text-rose-500", "✍️");
+                return;
+            }
+
+            const journalData = {
+                type: type,
+                title: title,
+                content: content,
+                author: author,
+                date: new Date().toLocaleDateString(),
+                timestamp: Date.now()
+            };
+
+            let cloudSuccess = false;
+            if (window.saveToCloudJournal) {
+                cloudSuccess = await window.saveToCloudJournal(journalData);
+            }
+
+            if (!cloudSuccess) {
+                localJournalFallback.unshift(journalData);
+                localStorage.setItem('zh_localJournal', JSON.stringify(localJournalFallback));
+                if (window.renderCloudJournal) window.renderCloudJournal(localJournalFallback);
+            }
+
+            document.getElementById('journalTitle').value = "";
+            document.getElementById('journalContent').value = "";
+
+            if (cloudSuccess) {
+                showToast(`${type} Synced Globally! 🌍✨`, "border-zoo-purple text-zoo-purple", "📚");
+            } else {
+                showToast(`${type} Saved Locally! 📝`, "border-zoo-purple text-zoo-purple", "📚");
+            }
+        }
+
+        window.renderCloudJournal = function(entries) {
+            const emptyState = document.getElementById('empty-journal');
+            const container = document.getElementById('journal-feed');
+
+            if (!entries || entries.length === 0) {
+                emptyState.classList.remove('hidden');
+                container.classList.add('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            container.classList.remove('hidden');
+
+            container.innerHTML = entries.map(entry => {
+                const authorClass = entry.author && entry.author.includes('Jhingy') 
+                    ? 'bg-orange-100 text-zoo-orange border-2 border-zoo-orange' 
+                    : 'bg-pink-100 text-zoo-pink border-2 border-zoo-pink';
+                const authorDisplay = entry.author || 'Anonymous';
+                const typeIcon = entry.type === "Journal" ? "📝" : "📚";
+
+                return `
+                <div class="bg-white rounded-2xl p-5 border-4 border-zoo-purple shadow-[4px_4px_0px_0px_#e9d5ff]">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <span class="text-sm font-bold text-gray-500 block mb-1">${entry.date}</span>
+                            <h4 class="font-display text-2xl text-zoo-purple">${typeIcon} ${entry.title}</h4>
+                        </div>
+                        <span class="text-sm font-display px-3 py-1 rounded-full ${authorClass}">${authorDisplay}</span>
+                    </div>
+                    <p class="text-gray-700 font-sans whitespace-pre-line text-lg border-t-2 border-dashed border-purple-200 pt-3">${entry.content}</p>
+                </div>
+                `;
+            }).join('');
+        };
+
+        // --- Utility Functions ---
         document.getElementById('memoryText').addEventListener('input', updateLineCount);
 
         function updateLineCount() {
@@ -712,7 +976,6 @@
             }
         }
 
-        // --- Hug Modal Logic ---
         function requestHug() {
             const modal = document.getElementById('hugModal');
             const content = document.getElementById('hugModalContent');
@@ -728,62 +991,72 @@
             const content = document.getElementById('hugModalContent');
             content.classList.remove('scale-100', 'translate-y-0');
             content.classList.add('scale-95', 'translate-y-10');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 300);
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
         }
 
-        // --- Video Call Logic ---
-        let jitsiApi = null;
-
-        function startVideoCall() {
-            document.getElementById('callModal').classList.remove('hidden');
-            
-            const domain = 'meet.jit.si';
-            const options = {
-                roomName: 'JhingyLovesPostoZootopiaSuperSecretLine',
-                width: '100%',
-                height: '100%',
-                parentNode: document.querySelector('#jitsi-container'),
-                userInfo: { displayName: 'Zootopia Cutie' },
-                configOverwrite: { 
-                    startWithAudioMuted: false,
-                    startWithVideoMuted: false,
-                    prejoinPageEnabled: false
-                }
-            };
-            
-            if (!jitsiApi) {
-                jitsiApi = new JitsiMeetExternalAPI(domain, options);
+        function openGoogleMeet() {
+            const meetLink = APP_CONFIG.meetLink || "https://meet.google.com/new";
+            if(meetLink === "https://meet.google.com/new") {
+                showToast("Opening a new Google Meet! (Set your custom link in Settings ⚙️)", "border-zoo-blue text-zoo-blue", "📹");
             }
+            window.open(meetLink, '_blank');
         }
 
-        function endVideoCall() {
-            if (jitsiApi) {
-                jitsiApi.dispose();
-                jitsiApi = null;
-            }
-            document.getElementById('callModal').classList.add('hidden');
-        }
-
-        // --- Utils ---
         function showToast(msg, borderTextClass, emoji) {
             const toast = document.getElementById('toast');
-            
             document.getElementById('toastIcon').innerText = emoji;
             document.getElementById('toastMsg').innerText = msg;
+            toast.className = `fixed top-12 left-1/2 transform -translate-x-1/2 bg-white border-4 ${borderTextClass} px-6 py-4 rounded-3xl shadow-kawaii transition-all duration-400 z-[100] flex items-center gap-4 pointer-events-none w-max max-w-[90vw]`;
+            setTimeout(() => toast.classList.remove('-translate-y-32', 'opacity-0'), 10);
+            setTimeout(() => toast.classList.add('-translate-y-32', 'opacity-0'), 3500);
+        }
+
+        function navTo(pageId) {
+            document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-zoo-orange', 'text-zoo-pink', 'text-zoo-blue', 'text-zoo-green', 'text-zoo-purple');
+                btn.classList.add('text-gray-400');
+            });
+            document.getElementById(pageId).classList.add('active');
             
-            toast.className = `fixed top-8 right-8 bg-white border-4 ${borderTextClass} px-6 py-4 rounded-3xl shadow-kawaii transform transition-all duration-400 z-[100] flex items-center gap-4 pointer-events-none`;
+            const activeBtn = document.getElementById('nav-' + pageId);
+            activeBtn.classList.remove('text-gray-400');
+            if(pageId === 'page-hugs') activeBtn.classList.add('text-zoo-pink');
+            else if(pageId === 'page-calls') activeBtn.classList.add('text-zoo-blue');
+            else if(pageId === 'page-diary') activeBtn.classList.add('text-zoo-green');
+            else if(pageId === 'page-journal') activeBtn.classList.add('text-zoo-purple');
+            else activeBtn.classList.add('text-zoo-orange');
+        }
+
+        function createFloatingElements() {
+            const bgContainer = document.getElementById('dynamic-bg');
+            const elements = ['🥕', '🐾', '🐰', '🦊', '✨', '🌸', '💕'];
             
-            setTimeout(() => toast.classList.remove('-translate-y-24', 'opacity-0'), 10);
-            setTimeout(() => toast.classList.add('-translate-y-24', 'opacity-0'), 3500);
+            for(let i = 0; i < 20; i++) {
+                const el = document.createElement('div');
+                el.innerText = elements[Math.floor(Math.random() * elements.length)];
+                el.className = 'floating-element text-3xl md:text-4xl';
+                el.style.left = `${Math.random() * 100}vw`;
+                el.style.animationDuration = `${10 + Math.random() * 25}s`;
+                el.style.animationDelay = `${Math.random() * 10}s`;
+                bgContainer.appendChild(el);
+            }
         }
 
         window.onload = () => {
+            // ALWAYS check for a magic link first before trying to load APIs
+            checkMagicLinkOnLoad();
+
             loadRandomImage();
             createFloatingElements();
-            connectDrive(); // Auto-sync on load
-            // renderDiary() removed, because the Cloud database will automatically call renderCloudDiary() as soon as data loads!
+            connectDrive(); 
+            updateTimer();
+            
+            // Fallback load local diary/journal if no global config is set
+            if (!APP_CONFIG.firebaseConfig) {
+                if (window.renderCloudDiary) window.renderCloudDiary(localDiaryFallback);
+                if (window.renderCloudJournal) window.renderCloudJournal(localJournalFallback);
+            }
         };
 
     </script>
