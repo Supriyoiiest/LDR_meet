@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://meet.jit.si/external_api.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -382,13 +383,25 @@
         </div>
     </nav>
 
-    <!-- Settings Modal (Google Drive + Global Connection + Google Meet) -->
+    <!-- Settings Modal -->
     <div id="settingsModal" class="fixed inset-0 bg-blue-900/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 transition-opacity">
         <div class="bg-white p-6 md:p-8 rounded-[2rem] border-4 border-gray-300 max-w-md w-full shadow-kawaii transform scale-95 transition-transform duration-300 max-h-[90vh] overflow-y-auto" id="settingsModalContent">
             <h3 class="font-display text-3xl text-gray-700 mb-2"><i class="fa-solid fa-key text-zoo-orange mr-2"></i>Global Setup</h3>
-            <p class="text-sm font-bold text-gray-500 mb-6 border-b-2 border-dashed border-gray-200 pb-4">Connect your Google Drive for photos, your Google Meet link, and paste your Firebase Database config to keep it all synced globally! 🌍</p>
+            <p class="text-sm font-bold text-gray-500 mb-2 border-b-2 border-dashed border-gray-200 pb-4">Connect your Google Drive for photos, your Google Meet link, and paste your Firebase Database config to keep it all synced globally! 🌍</p>
+            
+            <div class="mt-2 mb-4 p-3 bg-blue-50 border-2 border-dashed border-zoo-blue rounded-xl text-xs text-gray-600 font-bold">
+                <i class="fa-solid fa-circle-check text-zoo-blue"></i> <b>Make Firebase last forever:</b> In Firebase > Firestore > Rules, change the rule to <code>allow read, write: if request.auth != null;</code> to remove the 30-day limit!
+            </div>
             
             <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold text-gray-600 ml-2 mb-1">Jhingy's Phone 🦊</label>
+                    <input type="tel" id="setJhingyPhone" placeholder="+1234567890" class="w-full p-3 bg-red-50 border-2 border-red-300 rounded-xl outline-none focus:border-red-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-600 ml-2 mb-1">Posto's Phone 🐰</label>
+                    <input type="tel" id="setPostoPhone" placeholder="+1234567890" class="w-full p-3 bg-red-50 border-2 border-red-300 rounded-xl outline-none focus:border-red-500">
+                </div>
                 <div>
                     <label class="block text-sm font-bold text-gray-600 ml-2 mb-1">Google Meet Link</label>
                     <input type="text" id="setMeetLink" placeholder="https://meet.google.com/abc-defg-hij" class="w-full p-3 bg-gray-50 border-2 border-gray-300 rounded-xl outline-none focus:border-zoo-blue">
@@ -404,11 +417,14 @@
                 <div class="pt-2 border-t-2 border-dashed border-gray-200">
                     <label class="block text-sm font-bold text-gray-600 ml-2 mb-1">Firebase Config JSON (Global Diary Sync)</label>
                     <textarea id="setFirebaseConfig" rows="4" placeholder='{"apiKey": "...", "authDomain": "...", "projectId": "..."}' class="w-full p-3 bg-gray-50 border-2 border-gray-300 rounded-xl outline-none focus:border-zoo-green text-xs font-mono"></textarea>
-                    <p class="text-xs text-gray-400 mt-2 font-bold"><i class="fa-solid fa-circle-info text-zoo-blue"></i> Since GitHub Pages is static, you need a free Firebase project config to save and sync memories between devices securely.</p>
                 </div>
             </div>
 
-            <div class="flex flex-col gap-3 mt-8">
+            <button onclick="downloadCloudBackup()" class="w-full py-3 bg-zoo-blue hover:bg-blue-500 text-white font-display text-xl rounded-xl border-4 border-blue-300 shadow-[2px_2px_0px_0px_#4fc3f7] transition-all btn-press mt-4">
+                <i class="fa-solid fa-download"></i> Download Full Database Backup
+            </button>
+
+            <div class="flex flex-col gap-3 mt-4">
                 <div class="flex gap-4">
                     <button onclick="closeSettingsModal()" class="w-1/3 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl transition-all">Cancel</button>
                     <button onclick="saveSettings()" class="w-2/3 py-3 bg-zoo-green hover:bg-green-500 text-white font-display text-xl rounded-xl border-4 border-green-300 shadow-[2px_2px_0px_0px_#81c784] transition-all btn-press">Save & Connect 🚀</button>
@@ -417,6 +433,25 @@
                     <i class="fa-solid fa-wand-magic-sparkles"></i> Copy Magic Link for Posto!
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- SOS Panic Modal -->
+    <div id="sosModal" class="fixed inset-0 bg-red-900/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 transition-opacity">
+        <div class="bg-white p-8 rounded-[3rem] border-4 border-red-400 max-w-sm w-full text-center shadow-kawaii transform scale-95 transition-transform duration-300" id="sosModalContent">
+            <div class="text-6xl mb-4 animate-bounce-slight">🚨</div>
+            <h3 class="font-display text-4xl text-red-500 mb-2">Emergency!</h3>
+            <p class="text-lg text-gray-600 font-bold mb-6">Who needs a rescue right now?</p>
+
+            <div class="flex flex-col gap-4">
+                <button onclick="callPartner('posto')" class="btn-press w-full py-4 bg-zoo-orange text-white font-display text-2xl rounded-xl border-4 border-orange-300 shadow-kawaii-orange transition-all">
+                    I'm Jhingy 🦊<br><span class="text-sm font-sans block mt-1">(Call Posto)</span>
+                </button>
+                <button onclick="callPartner('jhingy')" class="btn-press w-full py-4 bg-zoo-pink text-white font-display text-2xl rounded-xl border-4 border-pink-300 shadow-kawaii-pink transition-all">
+                    I'm Posto 🐰<br><span class="text-sm font-sans block mt-1">(Call Jhingy)</span>
+                </button>
+            </div>
+            <button onclick="closeSosModal()" class="mt-6 text-gray-400 font-bold hover:text-gray-600 underline">Cancel</button>
         </div>
     </div>
 
@@ -446,19 +481,6 @@
         </div>
     </div>
 
-    <!-- Video Call Modal -->
-    <div id="callModal" class="fixed inset-0 bg-blue-900/95 hidden z-50 flex flex-col items-center justify-center p-2 sm:p-6">
-        <div class="w-full flex justify-between items-center mb-4 text-white max-w-6xl px-4">
-            <h3 class="font-display text-3xl tracking-wide text-zoo-blue bg-white px-4 py-2 rounded-full border-4 border-zoo-blue">
-                <i class="fa-solid fa-shield-cat mr-2"></i> ZPD Line
-            </h3>
-            <button onclick="endVideoCall()" class="btn-press px-6 py-3 bg-red-400 text-white rounded-full font-display text-xl border-4 border-red-300 shadow-[4px_4px_0px_0px_#ef5350] flex items-center gap-2 transition-all">
-                <i class="fa-solid fa-phone-slash"></i> Hang Up
-            </button>
-        </div>
-        <div id="jitsi-container" class="w-full max-w-6xl h-full max-h-[85vh] bg-blue-50 rounded-[2rem] border-8 border-zoo-blue overflow-hidden shadow-kawaii-blue"></div>
-    </div>
-
     <!-- Cute Toast Notification -->
     <div id="toast" class="fixed top-8 left-1/2 transform -translate-x-1/2 bg-white border-4 px-6 py-4 rounded-3xl shadow-kawaii -translate-y-32 opacity-0 transition-all duration-300 z-[100] flex items-center gap-3 pointer-events-none w-max max-w-[90vw]">
         <div id="toastIcon" class="text-3xl animate-bounce-slight"></div>
@@ -473,6 +495,8 @@
 
         const configStr = localStorage.getItem('zh_firebaseConfig');
         window.firebaseInitialized = false;
+        window.currentDiaryData = [];
+        window.currentJournalData = [];
 
         if (configStr && configStr.trim() !== "") {
             try {
@@ -493,6 +517,7 @@
                         onSnapshot(q, (snapshot) => {
                             const entries = [];
                             snapshot.forEach(doc => entries.push({ id: doc.id, ...doc.data() }));
+                            window.currentDiaryData = entries;
                             if (window.renderCloudDiary) window.renderCloudDiary(entries);
                         }, (error) => console.error("Diary global sync error:", error));
 
@@ -511,6 +536,7 @@
                         onSnapshot(qJournal, (snapshot) => {
                             const entries = [];
                             snapshot.forEach(doc => entries.push({ id: doc.id, ...doc.data() }));
+                            window.currentJournalData = entries;
                             if (window.renderCloudJournal) window.renderCloudJournal(entries);
                         }, (error) => console.error("Journal global sync error:", error));
                     }
@@ -557,10 +583,14 @@
             driveFolderId: localStorage.getItem('zh_driveFolderId') || "",
             apiKey: localStorage.getItem('zh_apiKey') || "",
             firebaseConfig: localStorage.getItem('zh_firebaseConfig') || "",
-            meetLink: localStorage.getItem('zh_meetLink') || ""
+            meetLink: localStorage.getItem('zh_meetLink') || "",
+            jhingyPhone: localStorage.getItem('zh_jhingyPhone') || "",
+            postoPhone: localStorage.getItem('zh_postoPhone') || ""
         };
 
         function openSettingsModal() {
+            document.getElementById('setJhingyPhone').value = APP_CONFIG.jhingyPhone;
+            document.getElementById('setPostoPhone').value = APP_CONFIG.postoPhone;
             document.getElementById('setMeetLink').value = APP_CONFIG.meetLink;
             document.getElementById('setDriveFolder').value = APP_CONFIG.driveFolderId;
             document.getElementById('setDriveKey').value = APP_CONFIG.apiKey;
@@ -585,12 +615,16 @@
 
         function saveSettings() {
             const keys = {
+                jhingyPhone: document.getElementById('setJhingyPhone').value.trim(),
+                postoPhone: document.getElementById('setPostoPhone').value.trim(),
                 meetLink: document.getElementById('setMeetLink').value.trim(),
                 driveFolderId: document.getElementById('setDriveFolder').value.trim(),
                 apiKey: document.getElementById('setDriveKey').value.trim(),
                 firebaseConfig: document.getElementById('setFirebaseConfig').value.trim()
             };
 
+            localStorage.setItem('zh_jhingyPhone', keys.jhingyPhone);
+            localStorage.setItem('zh_postoPhone', keys.postoPhone);
             localStorage.setItem('zh_meetLink', keys.meetLink);
             localStorage.setItem('zh_driveFolderId', keys.driveFolderId);
             localStorage.setItem('zh_apiKey', keys.apiKey);
@@ -605,6 +639,24 @@
             setTimeout(() => location.reload(), 1500);
         }
 
+        // --- FULL DATABASE BACKUP ---
+        window.downloadCloudBackup = function() {
+            const data = {
+                diary: window.currentDiaryData || JSON.parse(localStorage.getItem('zh_localDiary')) || [],
+                journal: window.currentJournalData || JSON.parse(localStorage.getItem('zh_localJournal')) || [],
+                lastMet: localStorage.getItem('zh_lastMetTime')
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Zootopia_Backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast("Database Backup Downloaded! 💾", "border-zoo-blue text-zoo-blue", "📦");
+        };
+
         // --- MAGIC LINK LOGIC ---
         function generateMagicLink() {
             saveSettings();
@@ -612,9 +664,11 @@
             const d = encodeURIComponent(APP_CONFIG.driveFolderId);
             const k = encodeURIComponent(APP_CONFIG.apiKey);
             const m = encodeURIComponent(APP_CONFIG.meetLink);
+            const pj = encodeURIComponent(APP_CONFIG.jhingyPhone);
+            const pp = encodeURIComponent(APP_CONFIG.postoPhone);
             const f = encodeURIComponent(btoa(APP_CONFIG.firebaseConfig)); 
             
-            const magicUrl = `${window.location.origin}${window.location.pathname}?d=${d}&k=${k}&m=${m}&f=${f}`;
+            const magicUrl = `${window.location.origin}${window.location.pathname}?d=${d}&k=${k}&m=${m}&pj=${pj}&pp=${pp}&f=${f}`;
             
             navigator.clipboard.writeText(magicUrl).then(() => {
                 showToast("Magic Link Copied! Send it to her! 🪄", "border-zoo-pink text-zoo-pink", "✨");
@@ -631,10 +685,12 @@
 
         function checkMagicLinkOnLoad() {
             const params = new URLSearchParams(window.location.search);
-            if (params.has('d') || params.has('k') || params.has('f') || params.has('m')) {
+            if (params.has('d') || params.has('k') || params.has('f') || params.has('m') || params.has('pj') || params.has('pp')) {
                 if (params.has('d')) localStorage.setItem('zh_driveFolderId', decodeURIComponent(params.get('d')));
                 if (params.has('k')) localStorage.setItem('zh_apiKey', decodeURIComponent(params.get('k')));
                 if (params.has('m')) localStorage.setItem('zh_meetLink', decodeURIComponent(params.get('m')));
+                if (params.has('pj')) localStorage.setItem('zh_jhingyPhone', decodeURIComponent(params.get('pj')));
+                if (params.has('pp')) localStorage.setItem('zh_postoPhone', decodeURIComponent(params.get('pp')));
                 if (params.has('f')) {
                     try {
                         localStorage.setItem('zh_firebaseConfig', atob(decodeURIComponent(params.get('f'))));
@@ -645,6 +701,8 @@
                 APP_CONFIG.apiKey = localStorage.getItem('zh_apiKey');
                 APP_CONFIG.firebaseConfig = localStorage.getItem('zh_firebaseConfig');
                 APP_CONFIG.meetLink = localStorage.getItem('zh_meetLink');
+                APP_CONFIG.jhingyPhone = localStorage.getItem('zh_jhingyPhone');
+                APP_CONFIG.postoPhone = localStorage.getItem('zh_postoPhone');
 
                 window.history.replaceState({}, document.title, window.location.pathname);
                 
@@ -656,12 +714,36 @@
 
         // --- SOS PANIC BUTTON ---
         function triggerSOS() {
-            showToast("Opening Email for SOS... ❤️‍🩹", "border-red-500 text-red-500", "🚨");
+            const modal = document.getElementById('sosModal');
+            const content = document.getElementById('sosModalContent');
+            modal.classList.remove('hidden');
             setTimeout(() => {
-                const subject = encodeURIComponent("SOS - Panic Attack - I need you");
-                const body = encodeURIComponent("I am having a panic attack. Please check your phone and contact me immediately. I need you right now.");
-                window.location.href = `mailto:jhinghysen@gmail.com?subject=${subject}&body=${body}`;
+                content.classList.remove('scale-95', 'translate-y-10');
+                content.classList.add('scale-100', 'translate-y-0');
+            }, 10);
+        }
+
+        function closeSosModal() {
+            const modal = document.getElementById('sosModal');
+            const content = document.getElementById('sosModalContent');
+            content.classList.remove('scale-100', 'translate-y-0');
+            content.classList.add('scale-95', 'translate-y-10');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+        }
+
+        function callPartner(target) {
+            let phone = target === 'posto' ? APP_CONFIG.postoPhone : APP_CONFIG.jhingyPhone;
+            let targetName = target === 'posto' ? 'Posto 🐰' : 'Jhingy 🦊';
+
+            if (!phone) {
+                showToast(`Set ${targetName}'s phone in Settings first! ⚙️`, "border-red-500 text-red-500", "⚠️");
+                return;
+            }
+            showToast(`Calling ${targetName}... 📞`, "border-red-500 text-red-500", "🚨");
+            setTimeout(() => {
+                window.location.href = `tel:${phone}`;
             }, 800);
+            closeSosModal();
         }
 
         // --- CUDDLE TIMER LOGIC ---
