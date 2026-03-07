@@ -303,6 +303,9 @@
                 <div class="absolute -top-5 sm:-top-6 left-4 sm:left-6 text-4xl sm:text-5xl animate-bounce-slight">📖</div>
                 <div class="flex justify-between items-center mb-6 sm:mb-8 mt-2 sm:mt-4">
                     <h2 class="font-display text-3xl sm:text-4xl text-zoo-green m-0">Our Diary</h2>
+                    <button onclick="openPhotobook()" class="btn-press px-4 py-2 bg-zoo-orange text-white rounded-xl font-display text-sm sm:text-lg border-2 border-orange-300 shadow-[2px_2px_0px_0px_#ffccbc] transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-images"></i> <span class="hidden sm:inline">Photo Book</span>
+                    </button>
                 </div>
                 
                 <div id="empty-diary" class="text-center py-6 sm:py-10">
@@ -1148,6 +1151,90 @@
 
             showToast("Entry deleted! 🗑️", "border-red-400 text-red-500", "✨");
             closeDeleteModal();
+        }
+
+        // --- PHOTO BOOK GENERATOR ---
+        function openPhotobook() {
+            const entries = window.globalData.diary && window.globalData.diary.length > 0 
+                            ? window.globalData.diary 
+                            : JSON.parse(localStorage.getItem('zh_localDiary')) || [];
+            
+            if (!entries || entries.length === 0) {
+                showToast("No memories yet! Add some first 🥺", "border-rose-400 text-rose-500", "📸");
+                return;
+            }
+
+            const photobookHtml = `
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Jhingy & Posto's Photo Book</title>
+                <script src="https://cdn.tailwindcss.com"><\/script>
+                <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+                <style>
+                    body { font-family: 'Comic Neue', cursive; background-color: #fff8e1; }
+                    h1 { font-family: 'Chewy', cursive; }
+                    .masonry { column-count: 1; column-gap: 2rem; padding: 1rem; }
+                    @media (min-width: 640px) { .masonry { column-count: 2; padding: 2rem; } }
+                    @media (min-width: 1024px) { .masonry { column-count: 3; } }
+                    .polaroid { 
+                        background: white; 
+                        padding: 1rem 1rem 3rem 1rem; 
+                        border-radius: 8px; 
+                        border: 3px solid #ff8a65; 
+                        box-shadow: 6px 6px 0px 0px #ffe0b2; 
+                        display: inline-block; 
+                        width: 100%;
+                        break-inside: avoid; 
+                        margin-bottom: 2rem; 
+                        transition: all 0.3s ease;
+                    }
+                    .polaroid:hover { transform: scale(1.02) !important; box-shadow: 8px 8px 0px 0px #ff8a65; }
+                    .polaroid::before {
+                        content: '';
+                        position: absolute;
+                        top: -10px;
+                        left: 50%;
+                        transform: translateX(-50%) rotate(2deg);
+                        width: 60px;
+                        height: 25px;
+                        background-color: rgba(129, 199, 132, 0.7);
+                        border: 2px dashed white;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="text-center py-12 px-4">
+                    <h1 class="text-5xl md:text-7xl text-[#ff8a65] mb-4 drop-shadow-md">Our Photo Book</h1>
+                    <p class="text-xl text-gray-600 font-bold">A magical collection of our memories ✨</p>
+                </div>
+                <div class="masonry max-w-7xl mx-auto">
+                    \${entries.map((entry, index) => {
+                        const rotation = (index % 2 === 0) ? 'rotate(2deg)' : 'rotate(-2deg)';
+                        return \`
+                        <div class="polaroid" style="transform: \${rotation}">
+                            <img src="\${entry.image}" class="w-full object-cover rounded-md border-2 border-gray-200" alt="Memory">
+                            <div class="mt-4">
+                                <p class="text-gray-800 font-bold text-lg whitespace-pre-line">\${entry.text}</p>
+                                <p class="text-gray-500 text-sm mt-3 font-bold border-t-2 border-dashed border-orange-200 pt-2">\${entry.date} • \${entry.author}</p>
+                            </div>
+                        </div>
+                        \`;
+                    }).join('')}
+                </div>
+                <div class="text-center py-16">
+                    <p class="text-3xl font-bold text-[#f06292] font-display tracking-widest">Love you forever! 🦊❤️🐰</p>
+                </div>
+            </body>
+            </html>
+            `;
+
+            // Opens the generated HTML string directly in a new browser tab
+            const blob = new Blob([photobookHtml], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            window.open(url, '_blank');
         }
 
         // --- Utility Functions ---
