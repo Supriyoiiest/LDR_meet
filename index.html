@@ -1164,6 +1164,20 @@
                 return;
             }
 
+            // Build the polaroids first to avoid text-escaping bugs
+            const entriesHtml = entries.map((entry, index) => {
+                const rotation = (index % 2 === 0) ? 'rotate(2deg)' : 'rotate(-2deg)';
+                return `
+                <div class="polaroid" style="transform: ${rotation}">
+                    <img src="${entry.image}" class="w-full object-cover rounded-md border-2 border-gray-200" alt="Memory">
+                    <div class="mt-4">
+                        <p class="text-gray-800 font-bold text-lg whitespace-pre-line">${entry.text}</p>
+                        <p class="text-gray-500 text-sm mt-3 font-bold border-t-2 border-dashed border-orange-200 pt-2">${entry.date} • ${entry.author}</p>
+                    </div>
+                </div>
+                `;
+            }).join('');
+
             const photobookHtml = `
             <!DOCTYPE html>
             <html lang="en">
@@ -1211,18 +1225,7 @@
                     <p class="text-xl text-gray-600 font-bold">A magical collection of our memories ✨</p>
                 </div>
                 <div class="masonry max-w-7xl mx-auto">
-                    \${entries.map((entry, index) => {
-                        const rotation = (index % 2 === 0) ? 'rotate(2deg)' : 'rotate(-2deg)';
-                        return \`
-                        <div class="polaroid" style="transform: \${rotation}">
-                            <img src="\${entry.image}" class="w-full object-cover rounded-md border-2 border-gray-200" alt="Memory">
-                            <div class="mt-4">
-                                <p class="text-gray-800 font-bold text-lg whitespace-pre-line">\${entry.text}</p>
-                                <p class="text-gray-500 text-sm mt-3 font-bold border-t-2 border-dashed border-orange-200 pt-2">\${entry.date} • \${entry.author}</p>
-                            </div>
-                        </div>
-                        \`;
-                    }).join('')}
+                    ${entriesHtml}
                 </div>
                 <div class="text-center py-16">
                     <p class="text-3xl font-bold text-[#f06292] font-display tracking-widest">Love you forever! 🦊❤️🐰</p>
